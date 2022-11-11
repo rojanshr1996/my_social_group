@@ -7,9 +7,8 @@ import 'dart:developer' as devtools show log;
 
 import 'package:tekk_gram/state/auth/providers/is_logged_in_provider.dart';
 import 'package:tekk_gram/state/providers/is_loading_provider.dart';
-import 'package:tekk_gram/utils/constants.dart';
-import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/loading/loading_screen.dart';
+import 'package:tekk_gram/views/login/login_view.dart';
 
 extension Log on Object {
   void log() => devtools.log(toString());
@@ -52,7 +51,7 @@ class MyApp extends StatelessWidget {
         final isLoggedIn = ref.watch(isLoggedInProvider);
 
         if (isLoggedIn) {
-          return const HomeView();
+          return const MainView();
         } else {
           return const LoginView();
         }
@@ -61,52 +60,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginView extends ConsumerWidget {
-  const LoginView({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text("Login"),
-        // ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Image.asset(
-                  appLogo,
-                  height: Utilities.screenHeight(context) * 0.2,
-                ),
-              ),
-              const SizedBox(height: 50),
-              Text(
-                "Welcome to TekkGram,",
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headline4?.copyWith(fontWeight: FontWeight.w500, fontSize: 25),
-              ),
-              const SizedBox(height: 50),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    ref.read(authStateProvider.notifier).loginWithGoogle();
-                  },
-                  child: const Text("Sign In with Google"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class MainView extends StatelessWidget {
+  const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
