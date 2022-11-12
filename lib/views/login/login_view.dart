@@ -24,7 +24,7 @@ class LoginView extends ConsumerWidget {
                 Center(
                   child: Image.asset(
                     appLogo,
-                    height: Utilities.screenHeight(context) * 0.25,
+                    height: Utilities.screenHeight(context) * 0.2,
                   ),
                 ),
                 Column(
