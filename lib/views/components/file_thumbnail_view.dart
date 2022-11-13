@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tekk_gram/main.dart';
 import 'package:tekk_gram/state/image_upload/models/thumbnail_request.dart';
 import 'package:tekk_gram/state/image_upload/providers/thumbnail_provider.dart';
 import 'package:tekk_gram/views/components/animations/loading_animation_view.dart';
@@ -16,9 +17,9 @@ class FileThumbnailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final thumbnail = ref.watch(thumbnailProvider(thumbnailRequest));
-
     return thumbnail.when(
       data: (imageWithAspectRatio) {
+        imageWithAspectRatio.image.log();
         return AspectRatio(
           aspectRatio: imageWithAspectRatio.aspectRatio,
           child: imageWithAspectRatio.image,

@@ -1,10 +1,10 @@
-import 'dart:io';
+import 'dart:io' show File;
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image/image.dart' as img;
 import 'package:tekk_gram/state/constants/firebase_collection_name.dart';
 import 'package:tekk_gram/state/image_upload/constants/constants.dart';
 import 'package:tekk_gram/state/image_upload/exceptions/could_not_build_thumbnail_exception.dart';
@@ -14,7 +14,6 @@ import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/image_upload/typedefs/is_loading.dart';
 import 'package:tekk_gram/state/post_settings/models/post_settings.dart';
 import 'package:tekk_gram/state/posts/models/post_payload.dart';
-import 'package:tekk_gram/state/posts/typedefs/user_id.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -28,21 +27,26 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
     required FileType fileType,
     required String message,
     required Map<PostSettings, bool> postSettings,
-    required UserId userId,
+    required String userId,
   }) async {
     isLoading = true;
+
     late Uint8List thumbnailUint8List;
 
     switch (fileType) {
       case FileType.image:
+        // create a thumbnail out of the file
         final fileAsImage = img.decodeImage(file.readAsBytesSync());
         if (fileAsImage == null) {
           isLoading = false;
-          throw const CouldNotBuildThumbnailException();
+          return false;
         }
-        final thumbnail = img.copyResize(fileAsImage, width: Constants.imageThumbnailWidth);
+        // create thumbnail
+        final thumbnail = img.copyResize(
+          fileAsImage,
+          width: Constants.imageThumbnailWidth,
+        );
         final thumbnailData = img.encodeJpg(thumbnail);
-
         thumbnailUint8List = Uint8List.fromList(thumbnailData);
         break;
       case FileType.video:
@@ -58,33 +62,32 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
         } else {
           thumbnailUint8List = thumb;
         }
-
         break;
     }
+    // calculate the aspect ratio
 
-    // Calculate the aspect ratio
     final thumbnailAspectRatio = await thumbnailUint8List.getAspectRatio();
 
-    // Calculate references
+    // calculate references
+
     final fileName = const Uuid().v4();
 
-    // Create references to the thumbnail and the image itself
+    // create references to the thumbnail and the image itself
+
     final thumbnailRef =
         FirebaseStorage.instance.ref().child(userId).child(FirebaseCollectionName.thumbnails).child(fileName);
 
     final originalFileRef = FirebaseStorage.instance.ref().child(userId).child(fileType.collectionName).child(fileName);
-
     try {
-      final thumbnailUploadTask = await thumbnailRef.putData(thumbnailUint8List);
+      // upload the thumbnai
 
+      final thumbnailUploadTask = await thumbnailRef.putData(thumbnailUint8List);
       final thumbnailStorageId = thumbnailUploadTask.ref.name;
 
-      //upload original file
-
+      // upload the original image
       final originalFileUploadTask = await originalFileRef.putFile(file);
       final originalFileStorageId = originalFileUploadTask.ref.name;
 
-      //upload the post iteself
       // upload the post itself
       final postPayload = PostPayload(
         userId: userId,

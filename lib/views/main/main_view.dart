@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/auth_state_provider.dart';
+import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
+import 'package:tekk_gram/state/image_upload/models/file_type.dart';
+import 'package:tekk_gram/state/post_settings/providers/post_settings_provider.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/logout_dialog.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
+import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
 import 'package:tekk_gram/views/tabs/users_posts/user_posts_view.dart';
 
 class MainView extends ConsumerStatefulWidget {
-  const MainView({super.key});
+  const MainView({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MainViewState();
@@ -21,26 +25,68 @@ class _MainViewState extends ConsumerState<MainView> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            Strings.appName,
-          ),
+          title: const Text(Strings.appName),
           actions: [
             IconButton(
-              onPressed: () async {},
-              icon: const FaIcon(
-                FontAwesomeIcons.film,
-              ),
-            ),
-            IconButton(
-              onPressed: () async {},
-              icon: const Icon(
-                Icons.add_photo_alternate,
-              ),
+              icon: const FaIcon(FontAwesomeIcons.film),
+              onPressed: () async {
+                // pick a video first
+                final videoFile = await ImagePickerHelper.pickVideoFromGallery();
+                if (videoFile == null) {
+                  return;
+                }
+
+                // reset the postSettingProvider
+                ref.refresh(postSettingsProvider);
+
+                // go to the screen to create a new post
+                if (!mounted) {
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CreateNewPostView(
+                      fileType: FileType.video,
+                      fileToPost: videoFile,
+                    ),
+                  ),
+                );
+              },
             ),
             IconButton(
               onPressed: () async {
-                final shouldLogout = await const LogoutDialog().present(context).then((value) => value ?? false);
-                if (shouldLogout) {
+                // pick an image first
+                final imageFile = await ImagePickerHelper.pickImageFromGallery();
+                if (imageFile == null) {
+                  return;
+                }
+
+                // reset the postSettingProvider
+                ref.refresh(postSettingsProvider);
+
+                // go to the screen to create a new post
+                if (!mounted) {
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CreateNewPostView(
+                      fileType: FileType.image,
+                      fileToPost: imageFile,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add_photo_alternate_outlined),
+            ),
+            IconButton(
+              onPressed: () async {
+                final shouldLogOut = await const LogoutDialog().present(context).then(
+                      (value) => value ?? false,
+                    );
+                if (shouldLogOut) {
                   await ref.read(authStateProvider.notifier).logOut();
                 }
               },
@@ -52,13 +98,19 @@ class _MainViewState extends ConsumerState<MainView> {
           bottom: const TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.person),
+                icon: Icon(
+                  Icons.person,
+                ),
               ),
               Tab(
-                icon: Icon(Icons.search),
+                icon: Icon(
+                  Icons.search,
+                ),
               ),
               Tab(
-                icon: Icon(Icons.home),
+                icon: Icon(
+                  Icons.home,
+                ),
               ),
             ],
           ),
