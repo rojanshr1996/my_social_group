@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show immutable, VoidCallback;
 import 'package:flutter/material.dart' show TextStyle, Colors, TextDecoration;
-import 'package:tekk_gram/views/components/components/rich_text/link_text.dart';
+import 'package:tekk_gram/views/components/rich_text/link_text.dart';
 
 @immutable
 class BaseText {

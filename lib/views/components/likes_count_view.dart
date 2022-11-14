@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/likes/providers/post_likes_count_provider.dart';
 import 'package:tekk_gram/state/posts/typedefs/post_id.dart';
 import 'package:tekk_gram/views/components/animations/small_error_animation_view.dart';
-import 'components/strings.dart';
+import 'strings.dart';
 
 class LikesCountView extends ConsumerWidget {
   final PostId postId;

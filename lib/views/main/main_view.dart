@@ -9,6 +9,8 @@ import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/logout_dialog.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
+import 'package:tekk_gram/views/tabs/home/home_view.dart';
+import 'package:tekk_gram/views/tabs/search/search_view.dart';
 import 'package:tekk_gram/views/tabs/users_posts/user_posts_view.dart';
 
 class MainView extends ConsumerStatefulWidget {
@@ -97,28 +99,16 @@ class _MainViewState extends ConsumerState<MainView> {
           ],
           bottom: const TabBar(
             tabs: [
-              Tab(
-                icon: Icon(
-                  Icons.person,
-                ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.search,
-                ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.home,
-                ),
-              ),
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.search)),
+              Tab(icon: Icon(Icons.person)),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
-            UserPostsView(),
-            UserPostsView(),
+            HomeView(),
+            SearchView(),
             UserPostsView(),
           ],
         ),

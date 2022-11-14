@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tekk_gram/views/components/animations/empty_contents_animation_view.dart';
 
 class EmptyContentsWithTextAnimationView extends StatelessWidget {
   final String text;
@@ -12,7 +13,7 @@ class EmptyContentsWithTextAnimationView extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          // const EmptyContentsAnimationView(),
+          const EmptyContentsAnimationView(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 36),
             child: Text(

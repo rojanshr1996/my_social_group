@@ -5,7 +5,7 @@ import 'package:tekk_gram/state/comments/models/comment.dart';
 import 'package:tekk_gram/state/comments/providers/delete_comment_provider.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
 import 'package:tekk_gram/views/components/animations/small_error_animation_view.dart';
-import 'package:tekk_gram/views/components/components/strings.dart';
+import 'package:tekk_gram/views/components/strings.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/delete_dialog.dart';
 

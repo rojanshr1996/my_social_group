@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable, VoidCallback;
-import 'package:tekk_gram/views/components/components/rich_text/base_text.dart';
+import 'package:tekk_gram/views/components/rich_text/base_text.dart';
 
 @immutable
 class LinkText extends BaseText {

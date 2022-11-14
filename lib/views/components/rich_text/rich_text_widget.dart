@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:tekk_gram/views/components/components/rich_text/base_text.dart';
-import 'package:tekk_gram/views/components/components/rich_text/link_text.dart';
+import 'package:tekk_gram/views/components/rich_text/base_text.dart';
+import 'package:tekk_gram/views/components/rich_text/link_text.dart';
 
 class RichTextWidget extends StatelessWidget {
   final Iterable<BaseText> texts;

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tekk_gram/views/components/components/strings.dart';
+import 'package:tekk_gram/views/components/strings.dart';
 import 'package:tekk_gram/views/components/loading/loading_screen_controller.dart';
 
 class LoadingScreen {
