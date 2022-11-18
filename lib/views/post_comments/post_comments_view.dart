@@ -67,9 +67,7 @@ class PostCommentsView extends HookConsumerWidget {
                       ref.refresh(
                         postCommentsProvider(request.value),
                       );
-                      return Future.delayed(
-                        const Duration(seconds: 1),
-                      );
+                      return Future.delayed(const Duration(seconds: 1));
                     },
                     child: ListView.builder(
                       padding: const EdgeInsets.all(8.0),

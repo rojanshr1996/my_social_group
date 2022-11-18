@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tekk_gram/enums/date_sorting.dart';
@@ -106,7 +107,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                     // comment button if post allows commenting on it
                     if (postWithComments.post.allowsComments)
                       IconButton(
-                        icon: const Icon(Icons.mode_comment_outlined),
+                        icon: const FaIcon(FontAwesomeIcons.comment),
                         onPressed: () {
                           Utilities.openActivity(context, PostCommentsView(postId: postId));
                         },

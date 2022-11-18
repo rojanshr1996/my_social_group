@@ -37,6 +37,7 @@ class _MainViewState extends ConsumerState<MainView> {
       child: Scaffold(
         extendBody: true,
         appBar: AppBar(
+          elevation: 0,
           title: const Text(Strings.appName),
           actions: [
             IconButton(
@@ -105,28 +106,73 @@ class _MainViewState extends ConsumerState<MainView> {
                 Icons.logout,
               ),
             ),
+          ],
+        ),
+        body: Column(
+          children: [
             Consumer(
-              builder: (context, ref, child) {
+              builder: (contzext, ref, child) {
                 final toggleValue = ref.watch(togglePostsViewProvider);
 
                 // final toggleView = ;
-                return IconButton(
-                  onPressed: () async {
-                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
-                  },
-                  icon: toggleValue ? const Icon(Icons.grid_3x3) : const Icon(Icons.filter_list),
+                return Container(
+                  color: Theme.of(context).bottomAppBarColor,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
+                                  },
+                                  icon: const Icon(Icons.filter_list),
+                                ),
+                                Container(
+                                  height: 5,
+                                  width: double.maxFinite,
+                                  color: toggleValue ? AppColors.transparent : AppColors.loginButtonColor,
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
+                                  },
+                                  icon: const Icon(Icons.grid_3x3),
+                                ),
+                                Container(
+                                  height: 5,
+                                  width: double.maxFinite,
+                                  color: toggleValue ? AppColors.loginButtonColor : AppColors.transparent,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
+            Expanded(
+              child: _widgetOptions.elementAt(bottomNavIndex),
+            ),
           ],
         ),
-        body: _widgetOptions.elementAt(bottomNavIndex),
         bottomNavigationBar: AnimatedScale(
           duration: const Duration(milliseconds: 300),
           scale: showBottomNavBar ? 1 : 0,
           alignment: Alignment.bottomCenter,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: BottomNavigationBar(

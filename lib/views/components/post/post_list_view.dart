@@ -15,20 +15,7 @@ class PostsListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useScrollController();
-    // useEffect(
-    //   () {
-    //     scrollController.addListener(() {
-    //       if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
-    //         log("SCROLLING FORWARD: ....");
-    //       }
-    //       if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
-    //         log("SCROLLING BACKWARD: ....");
-    //       }
-    //     });
-    //     return scrollController.dispose;
-    //   },
-    //   [scrollController],
-    // );
+
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
@@ -66,26 +53,5 @@ class PostsListView extends HookConsumerWidget {
         ],
       ),
     );
-
-    // ListView.builder(
-    //   padding: const EdgeInsets.all(8),
-    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 3,
-    //     mainAxisSpacing: 8,
-    //     crossAxisSpacing: 8,
-    //   ),
-    //   itemCount: posts.length,
-    //   itemBuilder: (context, index) {
-    //     final post = posts.elementAt(index);
-    //     return PostThumbnailView(
-    //       post: post,
-    //       onTapped: () {
-    //         // Navigate to post detail view
-
-    //         Utilities.openActivity(context, PostDetailsView(post: post));
-    //       },
-    //     );
-    //   },
-    // );
   }
 }
