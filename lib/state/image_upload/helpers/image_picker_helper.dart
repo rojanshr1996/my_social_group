@@ -8,7 +8,8 @@ import 'package:tekk_gram/state/image_upload/extensions/to_file.dart';
 class ImagePickerHelper {
   static final ImagePicker _imagePicker = ImagePicker();
 
-  static Future<File?> pickImageFromGallery() => _imagePicker.pickImage(source: ImageSource.gallery).toFile();
+  static Future<File?> pickImageFromGallery() =>
+      _imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50).toFile();
 
   static Future<File?> pickVideoFromGallery() => _imagePicker.pickVideo(source: ImageSource.gallery).toFile();
 }

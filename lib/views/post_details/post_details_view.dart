@@ -106,9 +106,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                     // comment button if post allows commenting on it
                     if (postWithComments.post.allowsComments)
                       IconButton(
-                        icon: const Icon(
-                          Icons.mode_comment_outlined,
-                        ),
+                        icon: const Icon(Icons.mode_comment_outlined),
                         onPressed: () {
                           Utilities.openActivity(context, PostCommentsView(postId: postId));
                         },
@@ -119,7 +117,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                 PostDisplayNameAndMessageView(post: postWithComments.post),
                 PostDateView(dateTime: postWithComments.post.createdAt),
                 const Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Divider(color: Colors.white70),
                 ),
                 // comments
@@ -127,7 +125,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                 // display like count
                 if (postWithComments.post.allowsLikes)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(
                       children: [
                         LikesCountView(postId: postId),
@@ -135,7 +133,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                     ),
                   ),
                 // add spacing to bottom of screen
-                const SizedBox(height: 100),
+                const SizedBox(height: 80),
               ],
             ),
           );

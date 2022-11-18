@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/auth_state_provider.dart';
+import 'package:tekk_gram/state/home/providers/bottom_nav_bar_scroll_visibility_provider.dart';
+import 'package:tekk_gram/state/home/providers/botton_nav_index_provider.dart';
 import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/post_settings/providers/post_settings_provider.dart';
+import 'package:tekk_gram/state/toggle_view/toggle_posts_view_provider.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/logout_dialog.dart';
+import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
 import 'package:tekk_gram/views/tabs/home/home_view.dart';
@@ -21,11 +25,17 @@ class MainView extends ConsumerStatefulWidget {
 }
 
 class _MainViewState extends ConsumerState<MainView> {
+  static const List<Widget> _widgetOptions = <Widget>[HomeView(), SearchView(), UserPostsView()];
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
+    // final bottomNavIndex = ref.watch(isIndexChangedProvider);
+    final bottomNavIndex = ref.watch(bottomNavIndexProvider);
+    final showBottomNavBar = ref.watch(bottomNavBarScrollVisibilityProvider);
+
+    return SafeArea(
       child: Scaffold(
+        extendBody: true,
         appBar: AppBar(
           title: const Text(Strings.appName),
           actions: [
@@ -63,7 +73,6 @@ class _MainViewState extends ConsumerState<MainView> {
                 if (imageFile == null) {
                   return;
                 }
-
                 // reset the postSettingProvider
                 ref.refresh(postSettingsProvider);
 
@@ -96,21 +105,66 @@ class _MainViewState extends ConsumerState<MainView> {
                 Icons.logout,
               ),
             ),
+            Consumer(
+              builder: (context, ref, child) {
+                final toggleValue = ref.watch(togglePostsViewProvider);
+
+                // final toggleView = ;
+                return IconButton(
+                  onPressed: () async {
+                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
+                  },
+                  icon: toggleValue ? const Icon(Icons.grid_3x3) : const Icon(Icons.filter_list),
+                );
+              },
+            ),
           ],
-          bottom: const TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.search)),
-              Tab(icon: Icon(Icons.person)),
-            ],
-          ),
         ),
-        body: const TabBarView(
-          children: [
-            HomeView(),
-            SearchView(),
-            UserPostsView(),
-          ],
+        body: _widgetOptions.elementAt(bottomNavIndex),
+        bottomNavigationBar: AnimatedScale(
+          duration: const Duration(milliseconds: 300),
+          scale: showBottomNavBar ? 1 : 0,
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: BottomNavigationBar(
+                backgroundColor: AppColors.loginButtonColor,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: FaIcon(FontAwesomeIcons.house),
+                    ),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: FaIcon(FontAwesomeIcons.magnifyingGlass),
+                    ),
+                    label: 'Search',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                      child: FaIcon(FontAwesomeIcons.user),
+                    ),
+                    label: 'User',
+                  ),
+                ],
+                currentIndex: bottomNavIndex,
+                selectedItemColor: AppColors.googleColor,
+                onTap: (value) {
+                  ref.read(bottomNavIndexProvider.notifier).changeIndex(index: value);
+                },
+                // showSelectedLabels: false,
+                showUnselectedLabels: false,
+                enableFeedback: true,
+              ),
+            ),
+          ),
         ),
       ),
     );
