@@ -10,6 +10,7 @@ import 'package:tekk_gram/state/image_upload/providers/image_uploader_provider.d
 import 'package:tekk_gram/state/post_settings/models/post_settings.dart';
 import 'package:tekk_gram/state/post_settings/providers/post_settings_provider.dart';
 import 'package:tekk_gram/views/components/file_thumbnail_view.dart';
+import 'package:tekk_gram/views/components/remove_focus.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 
 class CreateNewPostView extends StatefulHookConsumerWidget {
@@ -46,72 +47,76 @@ class _CreateNewPostViewState extends ConsumerState<CreateNewPostView> {
         postController.removeListener(listener);
       };
     }, [postController]);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          Strings.createNewPost,
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: isPostButtonEnabled.value
-                ? () async {
-                    // get the user id first
-                    final userId = ref.read(userIdProvider);
-                    if (userId == null) {
-                      return;
+    return RemoveFocus(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            Strings.createNewPost,
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: isPostButtonEnabled.value
+                  ? () async {
+                      // get the user id first
+                      final userId = ref.read(userIdProvider);
+                      if (userId == null) {
+                        return;
+                      }
+
+                      final message = postController.text;
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      final isUploaded = await ref.read(imageUploadProvider.notifier).upload(
+                            file: widget.fileToPost,
+                            fileType: widget.fileType,
+                            message: message,
+                            postSettings: postSettings,
+                            userId: userId,
+                          );
+                      if (isUploaded && mounted) {
+                        Navigator.of(context).pop();
+                      }
                     }
-                    final message = postController.text;
-                    final isUploaded = await ref.read(imageUploadProvider.notifier).upload(
-                          file: widget.fileToPost,
-                          fileType: widget.fileType,
-                          message: message,
-                          postSettings: postSettings,
-                          userId: userId,
-                        );
-                    if (isUploaded && mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  }
-                : null,
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // thumbnail
-            FileThumbnailView(
-              thumbnailRequest: thumbnailRequest,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  labelText: Strings.pleaseWriteYourMessageHere,
-                ),
-                autofocus: true,
-                maxLines: null,
-                controller: postController,
-              ),
-            ),
-            ...PostSettings.values.map(
-              (postSetting) => ListTile(
-                title: Text(postSetting.title),
-                subtitle: Text(postSetting.description),
-                trailing: Switch(
-                  value: postSettings[postSetting] ?? false,
-                  onChanged: (isOn) {
-                    ref.read(postSettingsProvider.notifier).setSetting(
-                          postSetting,
-                          isOn,
-                        );
-                  },
-                ),
-              ),
-            ),
+                  : null,
+            )
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // thumbnail
+              FileThumbnailView(
+                thumbnailRequest: thumbnailRequest,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: Strings.pleaseWriteYourMessageHere,
+                  ),
+                  autofocus: true,
+                  maxLines: null,
+                  controller: postController,
+                ),
+              ),
+              ...PostSettings.values.map(
+                (postSetting) => ListTile(
+                  title: Text(postSetting.title),
+                  subtitle: Text(postSetting.description),
+                  trailing: Switch(
+                    value: postSettings[postSetting] ?? false,
+                    onChanged: (isOn) {
+                      ref.read(postSettingsProvider.notifier).setSetting(
+                            postSetting,
+                            isOn,
+                          );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
