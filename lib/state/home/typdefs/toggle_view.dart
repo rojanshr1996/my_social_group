@@ -1,0 +1,1 @@
+typedef ToggleView = bool;
