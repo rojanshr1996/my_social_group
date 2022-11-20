@@ -21,9 +21,7 @@ class HomeView extends ConsumerWidget {
       onRefresh: () {
         ref.refresh(allPostsProvider);
         return Future.delayed(
-          const Duration(
-            seconds: 1,
-          ),
+          const Duration(seconds: 1),
         );
       },
       child: posts.when(

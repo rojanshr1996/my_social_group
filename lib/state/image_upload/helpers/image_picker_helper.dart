@@ -11,5 +11,10 @@ class ImagePickerHelper {
   static Future<File?> pickImageFromGallery() =>
       _imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50).toFile();
 
+  static Future<File?> picImageFromCamera() =>
+      _imagePicker.pickImage(source: ImageSource.camera, imageQuality: 50).toFile();
+
   static Future<File?> pickVideoFromGallery() => _imagePicker.pickVideo(source: ImageSource.gallery).toFile();
+
+  static Future<File?> pickVideoFromCamera() => _imagePicker.pickVideo(source: ImageSource.camera).toFile();
 }

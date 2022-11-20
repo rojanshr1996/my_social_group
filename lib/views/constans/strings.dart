@@ -34,5 +34,8 @@ class Strings {
   static const dontHaveAnAccount = "Don't have an account?\n";
   static const signUpOn = 'Sign up on ';
   static const orCreateAnAccountOn = ' or create an account on ';
+  static const logout = 'Log out';
+  static const settings = 'Settings';
+  static const profile = 'Profile';
   const Strings._();
 }

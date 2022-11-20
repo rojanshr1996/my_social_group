@@ -9,16 +9,22 @@ class UserInfoModel extends MapView<String, String?> {
   final UserId userId;
   final String displayName;
   final String? email;
+  final String? phone;
+  final String? imageUrl;
 
   UserInfoModel({
     required this.userId,
     required this.displayName,
     required this.email,
+    required this.phone,
+    required this.imageUrl,
   }) : super(
           {
             FirebaseFieldName.userId: userId,
             FirebaseFieldName.displayName: displayName,
             FirebaseFieldName.email: email,
+            FirebaseFieldName.phone: phone,
+            FirebaseFieldName.imageUrl: imageUrl,
           },
         );
 
@@ -29,6 +35,8 @@ class UserInfoModel extends MapView<String, String?> {
           userId: userId,
           displayName: json[FirebaseFieldName.displayName] ?? '',
           email: json[FirebaseFieldName.email],
+          phone: json[FirebaseFieldName.phone],
+          imageUrl: json[FirebaseFieldName.imageUrl],
         );
 
   @override
@@ -38,7 +46,9 @@ class UserInfoModel extends MapView<String, String?> {
           runtimeType == other.runtimeType &&
           userId == other.userId &&
           displayName == other.displayName &&
-          email == other.email;
+          email == other.email &&
+          phone == other.phone &&
+          imageUrl == other.imageUrl;
 
   @override
   int get hashCode => Object.hashAll(
@@ -46,6 +56,8 @@ class UserInfoModel extends MapView<String, String?> {
           userId,
           displayName,
           email,
+          phone,
+          imageUrl,
         ],
       );
 }

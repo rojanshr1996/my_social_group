@@ -118,9 +118,7 @@ class PostListItemThumbnailView extends ConsumerWidget {
         return const SizedBox();
       },
       loading: () {
-        return const Center(
-          child: SizedBox(),
-        );
+        return const SizedBox();
       },
     );
   }

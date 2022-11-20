@@ -10,5 +10,8 @@ class FirebaseFieldName {
   static const displayName = "display_name";
   static const email = "email";
 
+  static const phone = "phone";
+  static const imageUrl = "imageUrl";
+
   const FirebaseFieldName._();
 }

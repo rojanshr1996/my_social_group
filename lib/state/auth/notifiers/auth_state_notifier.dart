@@ -41,5 +41,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         userId: userId,
         displayName: _authenticator.displayName,
         email: _authenticator.email,
+        phone: _authenticator.phone,
+        imageUrl: _authenticator.imageUrl,
       );
 }

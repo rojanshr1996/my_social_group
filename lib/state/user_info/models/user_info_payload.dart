@@ -9,9 +9,13 @@ class UserInfoPayload extends MapView<String, String> {
     required UserId userId,
     required String? displayName,
     required String? email,
+    required String? phone,
+    required String? imageUrl,
   }) : super({
           FirebaseFieldName.userId: userId,
           FirebaseFieldName.displayName: displayName ?? "",
           FirebaseFieldName.email: email ?? "",
+          FirebaseFieldName.phone: phone ?? "",
+          FirebaseFieldName.imageUrl: imageUrl ?? "",
         });
 }

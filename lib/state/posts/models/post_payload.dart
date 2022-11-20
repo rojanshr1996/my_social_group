@@ -19,12 +19,13 @@ class PostPayload extends MapView<String, dynamic> {
     required double aspectRatio,
     required String thumbnailStorageId,
     required String originalFileStorageId,
+    FieldValue? createdAt,
     required Map<PostSettings, bool> postSettings,
   }) : super(
           {
             PostKey.userId: userId,
             PostKey.message: message,
-            PostKey.createdAt: FieldValue.serverTimestamp(),
+            PostKey.createdAt: createdAt ?? FieldValue.serverTimestamp(),
             PostKey.thumbnailUrl: thumbnailUrl,
             PostKey.fileUrl: fileUrl,
             PostKey.fileType: fileType.name,

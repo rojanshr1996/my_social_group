@@ -13,7 +13,7 @@ class PostUserInfo extends StatelessWidget {
     final formatter = DateFormat('d MMM, yyyy, h:mm a');
 
     return Container(
-      height: Utilities.screenHeight(context) * 0.065,
+      // height: Utilities.screenHeight(context) * 0.088,
       width: Utilities.screenWidth(context),
       decoration: BoxDecoration(
         gradient: AppColors.topDarkGradient,
@@ -25,13 +25,17 @@ class PostUserInfo extends StatelessWidget {
           children: [
             Text(
               displayName,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
             ),
             const SizedBox(height: 2),
             Text(
               formatter.format(createdAt),
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-            )
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 5),
           ],
         ),
       ),

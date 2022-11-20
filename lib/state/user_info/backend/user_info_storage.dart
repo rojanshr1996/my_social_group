@@ -13,6 +13,8 @@ class UserInfoStorage {
     required UserId userId,
     required String displayName,
     required String? email,
+    required String? phone,
+    required String? imageUrl,
   }) async {
     try {
       // Check if we have this user's info before
@@ -29,13 +31,21 @@ class UserInfoStorage {
         await userInfo.docs.first.reference.update({
           FirebaseFieldName.displayName: displayName,
           FirebaseFieldName.email: email ?? '',
+          FirebaseFieldName.phone: phone ?? '',
+          FirebaseFieldName.imageUrl: imageUrl ?? '',
         });
         return true;
       }
 
       // Is new user
 
-      final payload = UserInfoPayload(userId: userId, displayName: displayName, email: email);
+      final payload = UserInfoPayload(
+        userId: userId,
+        displayName: displayName,
+        email: email,
+        phone: phone,
+        imageUrl: imageUrl,
+      );
       await FirebaseFirestore.instance.collection(FirebaseCollectionName.users).add(payload);
       return true;
     } catch (e) {

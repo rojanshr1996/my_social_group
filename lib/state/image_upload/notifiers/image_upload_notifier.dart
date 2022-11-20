@@ -100,6 +100,7 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
         postSettings: postSettings,
         thumbnailStorageId: thumbnailStorageId,
         originalFileStorageId: originalFileStorageId,
+        createdAt: FieldValue.serverTimestamp(),
       );
       await FirebaseFirestore.instance.collection(FirebaseCollectionName.posts).add(postPayload);
       return true;
