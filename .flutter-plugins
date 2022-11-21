@@ -34,6 +34,7 @@ shared_preferences_linux=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/h
 shared_preferences_macos=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.4/
 shared_preferences_web=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.4/
 shared_preferences_windows=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.1.1/
+sqflite=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.2.0+3/
 url_launcher=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.1.6/
 url_launcher_android=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.21/
 url_launcher_ios=/Users/tekkon/Documents/flutterSDK/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_ios-6.0.17/
