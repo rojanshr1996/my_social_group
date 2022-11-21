@@ -53,6 +53,8 @@ class MyApp extends StatelessWidget {
           );
           final isLoggedIn = ref.watch(isLoggedInProvider);
 
+          isLoggedIn.log();
+
           if (isLoggedIn) {
             return const MainView();
           } else {

@@ -392,7 +392,8 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                 final shouldLogOut = await const LogoutDialog().present(context).then(
                                       (value) => value ?? false,
                                     );
-                                if (shouldLogOut) {
+                                if (shouldLogOut && mounted) {
+                                  Utilities.closeActivity(context);
                                   await ref.read(authStateProvider.notifier).logOut();
                                 }
                               },
