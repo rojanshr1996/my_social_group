@@ -5,6 +5,7 @@ import 'package:tekk_gram/state/home/providers/bottom_nav_bar_scroll_visibility_
 import 'package:tekk_gram/state/posts/providers/user_posts_provider.dart';
 import 'package:tekk_gram/state/toggle_view/toggle_posts_view_provider.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
+import 'package:tekk_gram/utils/constants.dart';
 import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/animations/empty_contents_with_text_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/error_animation_view.dart';
@@ -52,6 +53,27 @@ class UserPostsView extends ConsumerWidget {
                       },
                       child: Row(
                         children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).bottomAppBarColor,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
+                                    ? Image.asset(appLogo)
+                                    : Image.network(
+                                        userInfoModel.imageUrl!,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,6 +90,7 @@ class UserPostsView extends ConsumerWidget {
                               ],
                             ),
                           ),
+                          const SizedBox(width: 12),
                           const Icon(
                             Icons.arrow_forward_ios,
                             size: 20,

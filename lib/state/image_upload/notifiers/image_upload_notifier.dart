@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:tekk_gram/state/constants/firebase_collection_name.dart';
+import 'package:tekk_gram/state/constants/firebase_field_name.dart';
 import 'package:tekk_gram/state/image_upload/constants/constants.dart';
 import 'package:tekk_gram/state/image_upload/exceptions/could_not_build_thumbnail_exception.dart';
 import 'package:tekk_gram/state/image_upload/extensions/get_collection_name_from_file_type.dart';
@@ -14,6 +15,7 @@ import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/image_upload/typedefs/is_loading.dart';
 import 'package:tekk_gram/state/post_settings/models/post_settings.dart';
 import 'package:tekk_gram/state/posts/models/post_payload.dart';
+import 'package:tekk_gram/state/user_info/models/user_info_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -25,9 +27,10 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
   Future<bool> upload({
     required File file,
     required FileType fileType,
-    required String message,
-    required Map<PostSettings, bool> postSettings,
+    String? message,
+    Map<PostSettings, bool>? postSettings,
     required String userId,
+    UserInfoModel? userData,
   }) async {
     isLoading = true;
 
@@ -63,6 +66,21 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
           thumbnailUint8List = thumb;
         }
         break;
+      case FileType.userImage:
+        // create a thumbnail out of the file
+        final fileAsImage = img.decodeImage(file.readAsBytesSync());
+        if (fileAsImage == null) {
+          isLoading = false;
+          return false;
+        }
+        // create thumbnail
+        final thumbnail = img.copyResize(
+          fileAsImage,
+          width: Constants.imageThumbnailWidth,
+        );
+        final thumbnailData = img.encodeJpg(thumbnail);
+        thumbnailUint8List = Uint8List.fromList(thumbnailData);
+        break;
     }
     // calculate the aspect ratio
 
@@ -88,22 +106,39 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
       final originalFileUploadTask = await originalFileRef.putFile(file);
       final originalFileStorageId = originalFileUploadTask.ref.name;
 
-      // upload the post itself
-      final postPayload = PostPayload(
-        userId: userId,
-        message: message,
-        thumbnailUrl: await thumbnailRef.getDownloadURL(),
-        fileUrl: await originalFileRef.getDownloadURL(),
-        fileType: fileType,
-        fileName: fileName,
-        aspectRatio: thumbnailAspectRatio,
-        postSettings: postSettings,
-        thumbnailStorageId: thumbnailStorageId,
-        originalFileStorageId: originalFileStorageId,
-        createdAt: FieldValue.serverTimestamp(),
-      );
-      await FirebaseFirestore.instance.collection(FirebaseCollectionName.posts).add(postPayload);
-      return true;
+      if (fileType == FileType.userImage) {
+        final userInfo = await FirebaseFirestore.instance
+            .collection(
+              FirebaseCollectionName.users,
+            )
+            .where(FirebaseFieldName.userId, isEqualTo: userId)
+            .limit(1)
+            .get();
+        await userInfo.docs.first.reference.update({
+          FirebaseFieldName.displayName: userData?.displayName,
+          FirebaseFieldName.email: userData?.email ?? '',
+          FirebaseFieldName.phone: userData?.phone ?? '',
+          FirebaseFieldName.imageUrl: await originalFileRef.getDownloadURL(),
+        });
+        return true;
+      } else {
+        // upload the post itself
+        final postPayload = PostPayload(
+          userId: userId,
+          message: message ?? "",
+          thumbnailUrl: await thumbnailRef.getDownloadURL(),
+          fileUrl: await originalFileRef.getDownloadURL(),
+          fileType: fileType,
+          fileName: fileName,
+          aspectRatio: thumbnailAspectRatio,
+          postSettings: postSettings!,
+          thumbnailStorageId: thumbnailStorageId,
+          originalFileStorageId: originalFileStorageId,
+          createdAt: FieldValue.serverTimestamp(),
+        );
+        await FirebaseFirestore.instance.collection(FirebaseCollectionName.posts).add(postPayload);
+        return true;
+      }
     } catch (_) {
       return false;
     } finally {

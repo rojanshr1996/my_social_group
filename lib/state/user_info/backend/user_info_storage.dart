@@ -38,7 +38,6 @@ class UserInfoStorage {
       }
 
       // Is new user
-
       final payload = UserInfoPayload(
         userId: userId,
         displayName: displayName,

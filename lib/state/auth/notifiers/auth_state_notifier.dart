@@ -44,4 +44,23 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         phone: _authenticator.phone,
         imageUrl: _authenticator.imageUrl,
       );
+
+  Future<bool> updateUserInfo({
+    required UserId userId,
+    required String displayName,
+    required String? phone,
+    required String? imageUrl,
+  }) async {
+    state = state.copiedWithIsLoading(true);
+
+    final result = await _userInfoStorage.saveUserInfo(
+      userId: userId,
+      displayName: displayName,
+      email: _authenticator.email,
+      phone: phone,
+      imageUrl: imageUrl,
+    );
+    state = state.copiedWithIsLoading(false);
+    return result;
+  }
 }
