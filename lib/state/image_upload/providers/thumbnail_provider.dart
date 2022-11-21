@@ -27,6 +27,9 @@ final thumbnailProvider = FutureProvider.family.autoDispose<ImageWithAspectRatio
         }
         image = Image.memory(thumb, fit: BoxFit.fitHeight);
         break;
+      case FileType.userImage:
+        image = Image.file(request.file, fit: BoxFit.fitHeight);
+        break;
     }
     final aspectRatio = await image.getAspectRatio();
     return ImageWithAspectRatio(image: image, aspectRatio: aspectRatio);

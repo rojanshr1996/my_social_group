@@ -25,6 +25,9 @@ class Strings {
   static const createNewPost = 'Create New Post';
   static const pleaseWriteYourMessageHere = 'Please write your message here';
 
+  static const enterYourPhoneNumber = 'Please enter your phone number';
+  static const enterYourName = 'Please enter your name';
+
   static const noCommentsYet =
       'Nobody has commented on this post yet. You can change that though, and be the first person who comments!';
 

@@ -7,6 +7,8 @@ extension CollectionName on FileType {
         return 'images';
       case FileType.video:
         return 'videos';
+      case FileType.userImage:
+        return 'user_image';
     }
   }
 }

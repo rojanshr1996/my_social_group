@@ -8,6 +8,7 @@ class AppColors {
   static const loginButtonTextColor = Colors.white;
   static final googleColor = '#ffffff'.htmlColorToColor();
   static final facebookColor = '#3b5998'.htmlColorToColor();
+  static final greenColor = '#48b77e'.htmlColorToColor();
   static final darkColor = '#000000'.htmlColorToColor();
   static const transparent = Colors.transparent;
 

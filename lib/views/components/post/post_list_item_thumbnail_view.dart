@@ -60,6 +60,9 @@ class PostListItemThumbnailView extends ConsumerWidget {
                               child: PostUserInfo(
                                 createdAt: post.createdAt,
                                 displayName: userInfoModel.displayName,
+                                imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
+                                    ? ""
+                                    : userInfoModel.imageUrl!,
                               ),
                             ),
                             Positioned(

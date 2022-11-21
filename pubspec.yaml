@@ -33,6 +33,7 @@ dependencies:
   url_launcher: ^6.1.6
   shared_preferences: ^2.0.15
   camera: ^0.10.0+4
+  cached_network_image: ^3.2.2
 
 dev_dependencies:
   flutter_test:

@@ -26,7 +26,11 @@ class MainView extends ConsumerStatefulWidget {
 }
 
 class _MainViewState extends ConsumerState<MainView> {
-  static const List<Widget> _widgetOptions = <Widget>[HomeView(), SearchView(), UserPostsView()];
+  static const List<Widget> _widgetOptions = <Widget>[
+    HomeView(),
+    SearchView(),
+    UserPostsView(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -113,48 +117,50 @@ class _MainViewState extends ConsumerState<MainView> {
                       BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).bottomAppBarColor))),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: toggleValue ? AppColors.transparent : AppColors.loginButtonColor),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
-                                  },
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(4.0),
-                                    child: Icon(Icons.filter_list),
+                      bottomNavIndex == 1
+                          ? const SizedBox()
+                          : Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50),
+                                          color: toggleValue ? AppColors.transparent : AppColors.loginButtonColor),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Icon(Icons.filter_list),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: toggleValue ? AppColors.loginButtonColor : AppColors.transparent),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
-                                  },
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(4.0),
-                                    child: Icon(Icons.grid_3x3),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(50),
+                                          color: toggleValue ? AppColors.loginButtonColor : AppColors.transparent),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          ref.read(togglePostsViewProvider.notifier).togglePostsView(!toggleValue);
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Icon(Icons.grid_3x3),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 );
