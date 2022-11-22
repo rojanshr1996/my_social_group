@@ -100,10 +100,10 @@ class PostListItemThumbnailView extends ConsumerWidget {
                           ),
                       ],
                     ),
+                    CompactCommentsColumn(comments: postWithComments.comments),
                     postWithComments.post.allowsLikes || postWithComments.post.allowsComments
                         ? const Divider(color: Colors.white54)
                         : const SizedBox.shrink(),
-                    CompactCommentsColumn(comments: postWithComments.comments),
                   ],
                 );
               },

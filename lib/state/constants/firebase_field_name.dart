@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
 class FirebaseFieldName {
+  static const id = "id";
   static const userId = "uid";
   static const postId = "pos_id";
   static const comment = "comment";

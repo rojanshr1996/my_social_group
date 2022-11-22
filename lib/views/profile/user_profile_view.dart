@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/auth_state_provider.dart';
 import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
+import 'package:tekk_gram/state/home/providers/botton_nav_index_provider.dart';
 import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/image_upload/models/thumbnail_request.dart';
@@ -394,6 +395,7 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                     );
                                 if (shouldLogOut && mounted) {
                                   Utilities.closeActivity(context);
+                                  ref.read(bottomNavIndexProvider.notifier).changeIndex(index: 0);
                                   await ref.read(authStateProvider.notifier).logOut();
                                 }
                               },
