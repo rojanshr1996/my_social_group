@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/comments/models/comment_payload.dart';
@@ -44,8 +42,6 @@ class SendCommentNotifier extends StateNotifier<IsLoading> {
     isLoading = true;
 
     try {
-      log("Comment Id: $commentId");
-
       final commentData = await FirebaseFirestore.instance
           .collection(FirebaseCollectionName.comments)
           .where(FirebaseFieldName.postId, isEqualTo: postId)
