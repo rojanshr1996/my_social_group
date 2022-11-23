@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tekk_gram/enums/date_sorting.dart';
 import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
+import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
 import 'package:tekk_gram/state/posts/providers/can_current_user_delete_post_provider.dart';
 import 'package:tekk_gram/state/posts/providers/delete_post_provider.dart';
@@ -15,13 +16,16 @@ import 'package:tekk_gram/views/components/animations/small_error_animation_view
 import 'package:tekk_gram/views/components/comment/compact_comment_column.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/delete_dialog.dart';
+import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/components/like_button.dart';
 import 'package:tekk_gram/views/components/likes_count_view.dart';
 import 'package:tekk_gram/views/components/post/post_date_view.dart';
 import 'package:tekk_gram/views/components/post/post_display_name_and_message.dart';
 import 'package:tekk_gram/views/components/post/post_image_or_video_view.dart';
+import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/post_comments/post_comments_view.dart';
+import 'package:tekk_gram/views/post_details/post_edit_screen.dart';
 
 class PostDetailsView extends ConsumerStatefulWidget {
   final Post post;
@@ -52,16 +56,56 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(Strings.postDetails),
+        centerTitle: false,
         actions: [
           // share button is always present
           postWithComments.when(
             data: (postWithComments) {
-              return IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () {
-                  final url = postWithComments.post.fileUrl;
-                  Share.share(url, subject: Strings.checkOutThisPost);
-                },
+              return Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.share, size: 20),
+                    onPressed: () {
+                      final url = postWithComments.post.fileUrl;
+                      Share.share(url, subject: Strings.checkOutThisPost);
+                    },
+                  ),
+                  // delete button or no delete button if user cannot delete this post
+                  if (canDeletePost.value ?? false)
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 20,
+                          ),
+                          onPressed: () async {
+                            Utilities.openActivity(context, PostEditScreen(post: postWithComments.post));
+                            // delete the post now
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: AppColors.loginButtonColor,
+                            size: 20,
+                          ),
+                          onPressed: () async {
+                            final shouldDeletePost = await const DeleteDialog(titleOfObjectToDelete: Strings.post)
+                                .present(context)
+                                .then((shouldDelete) => shouldDelete ?? false);
+                            if (shouldDeletePost) {
+                              await ref.read(deletePostProvider.notifier).deletePost(post: widget.post);
+                              if (mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                            // delete the post now
+                          },
+                        ),
+                      ],
+                    )
+                ],
               );
             },
             error: (error, stackTrace) {
@@ -71,23 +115,6 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
               return const Center(child: CircularProgressIndicator());
             },
           ),
-          // delete button or no delete button if user cannot delete this post
-          if (canDeletePost.value ?? false)
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () async {
-                final shouldDeletePost = await const DeleteDialog(titleOfObjectToDelete: Strings.post)
-                    .present(context)
-                    .then((shouldDelete) => shouldDelete ?? false);
-                if (shouldDeletePost) {
-                  await ref.read(deletePostProvider.notifier).deletePost(post: widget.post);
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
-                }
-                // delete the post now
-              },
-            )
         ],
       ),
       body: postWithComments.when(
@@ -97,7 +124,14 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                PostImageOrVideoView(post: postWithComments.post),
+                GestureDetector(
+                  onTap: postWithComments.post.fileType == FileType.image
+                      ? () {
+                          Utilities.openActivity(context, EnlargeImage(imageUrl: postWithComments.post.fileUrl));
+                        }
+                      : null,
+                  child: PostImageOrVideoView(post: postWithComments.post),
+                ),
                 // like and comment buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -48,9 +48,7 @@ class EnlargeImage extends StatelessWidget {
                   child: CachedNetworkImage(
                     filterQuality: FilterQuality.none,
                     imageUrl: imageUrl,
-                    placeholder: (context, url) => Center(
-                      child: Image.asset(appLogo),
-                    ),
+                    placeholder: (context, url) => Center(child: Image.asset(appLogo)),
                     fit: BoxFit.contain,
                     errorWidget: (context, url, error) => const Center(
                       child: Icon(Icons.broken_image, color: AppColors.loginButtonTextColor, size: 50),
@@ -65,16 +63,17 @@ class EnlargeImage extends StatelessWidget {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Container(
-                  height: 40,
-                  width: 40,
                   decoration: BoxDecoration(
-                      color: AppColors.darkColor.withOpacity(0.8), borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: BackButton(
-                      onPressed: () {
+                    color: AppColors.darkColor.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      onTap: () {
                         Utilities.closeActivity(context);
                       },
-                      color: AppColors.darkColor,
+                      child: const Icon(Icons.arrow_back, size: 20),
                     ),
                   ),
                 ),

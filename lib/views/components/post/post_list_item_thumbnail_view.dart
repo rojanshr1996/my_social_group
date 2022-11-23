@@ -67,9 +67,7 @@ class PostListItemThumbnailView extends ConsumerWidget {
                             ),
                             Positioned(
                               bottom: -0.5,
-                              child: PostLikeCommentCount(
-                                postId: post.postId,
-                              ),
+                              child: PostLikeCommentCount(post: post),
                             )
                           ],
                         ),

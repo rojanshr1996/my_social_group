@@ -14,7 +14,7 @@ class RichTwoPartsText extends StatelessWidget {
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
-        style: const TextStyle(color: Colors.white70, height: 1.5),
+        style: const TextStyle(height: 1.5),
         children: [
           TextSpan(
             text: leftPart,
