@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/auth_state_provider.dart';
 import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
+import 'package:tekk_gram/state/home/providers/botton_nav_index_provider.dart';
 import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/image_upload/models/thumbnail_request.dart';
@@ -18,6 +19,7 @@ import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/camera_gallery_selection_widget.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/logout_dialog.dart';
+import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/components/remove_focus.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
@@ -83,25 +85,31 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                         ),
                                       ),
                                     )
-                                  : Container(
-                                      height: Utilities.screenHeight(context) * 0.35,
-                                      width: Utilities.screenWidth(context),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      padding: const EdgeInsets.all(8),
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Utilities.openActivity(
+                                            context, EnlargeImage(imageUrl: userInfoModel.imageUrl!));
+                                      },
                                       child: Container(
+                                        height: Utilities.screenHeight(context) * 0.35,
                                         width: Utilities.screenWidth(context),
                                         decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.white30, width: 0.5),
-                                          borderRadius: BorderRadius.circular(12),
+                                          color: Theme.of(context).primaryColor,
+                                          borderRadius: BorderRadius.circular(15),
                                         ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Image.network(
-                                            userInfoModel.imageUrl!,
-                                            fit: BoxFit.cover,
+                                        padding: const EdgeInsets.all(8),
+                                        child: Container(
+                                          width: Utilities.screenWidth(context),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Colors.white30, width: 0.5),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Image.network(
+                                              userInfoModel.imageUrl!,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -331,7 +339,7 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                           ),
                                         )
                                       : Text(
-                                          userInfoModel.phone ?? " -- ",
+                                          userInfoModel.phone == "" ? " -- " : userInfoModel.phone!,
                                           style:
                                               Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
                                         ),
@@ -394,6 +402,7 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                     );
                                 if (shouldLogOut && mounted) {
                                   Utilities.closeActivity(context);
+                                  ref.read(bottomNavIndexProvider.notifier).changeIndex(index: 0);
                                   await ref.read(authStateProvider.notifier).logOut();
                                 }
                               },

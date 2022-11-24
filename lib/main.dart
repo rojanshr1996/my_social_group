@@ -44,6 +44,8 @@ class MyApp extends StatelessWidget {
           ref.listen<bool>(
             isLoadingProvider,
             (_, isLoading) {
+              ("LOADER STATUS: $isLoading").log();
+
               if (isLoading) {
                 LoadingScreen.instance().show(context: context);
               } else {

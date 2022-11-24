@@ -10,7 +10,10 @@ class PostDateView extends StatelessWidget {
     final formatter = DateFormat('d MMM, yyyy, h:mm a');
     return Padding(
       padding: const EdgeInsets.only(left: 12.0),
-      child: Text(formatter.format(dateTime)),
+      child: Text(
+        formatter.format(dateTime),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
     );
   }
 }

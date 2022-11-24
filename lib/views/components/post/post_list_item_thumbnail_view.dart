@@ -44,6 +44,7 @@ class PostListItemThumbnailView extends ConsumerWidget {
                   children: [
                     Container(
                       constraints: BoxConstraints(
+                        minHeight: Utilities.screenHeight(context) * 0.25,
                         maxHeight: Utilities.screenHeight(context) * 0.6,
                       ),
                       child: ClipRRect(
@@ -51,10 +52,12 @@ class PostListItemThumbnailView extends ConsumerWidget {
                         child: Stack(
                           fit: StackFit.passthrough,
                           children: [
-                            Image.network(
-                              post.thumbnailUrl,
-                              fit: BoxFit.cover,
-                            ),
+                            post.thumbnailUrl == ""
+                                ? const SizedBox()
+                                : Image.network(
+                                    post.thumbnailUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                             Positioned(
                               top: -0.5,
                               child: PostUserInfo(
@@ -67,9 +70,7 @@ class PostListItemThumbnailView extends ConsumerWidget {
                             ),
                             Positioned(
                               bottom: -0.5,
-                              child: PostLikeCommentCount(
-                                postId: post.postId,
-                              ),
+                              child: PostLikeCommentCount(post: post),
                             )
                           ],
                         ),
@@ -100,10 +101,10 @@ class PostListItemThumbnailView extends ConsumerWidget {
                           ),
                       ],
                     ),
+                    CompactCommentsColumn(comments: postWithComments.comments),
                     postWithComments.post.allowsLikes || postWithComments.post.allowsComments
                         ? const Divider(color: Colors.white54)
                         : const SizedBox.shrink(),
-                    CompactCommentsColumn(comments: postWithComments.comments),
                   ],
                 );
               },
