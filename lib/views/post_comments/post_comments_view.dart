@@ -8,6 +8,7 @@ import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
 import 'package:tekk_gram/state/comments/providers/post_comments_provider.dart';
 import 'package:tekk_gram/state/comments/providers/send_comment_provider.dart';
 import 'package:tekk_gram/state/posts/typedefs/post_id.dart';
+import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
 import 'package:tekk_gram/views/components/animations/empty_contents_with_text_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/error_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/loading_animation_view.dart';
@@ -26,6 +27,7 @@ class PostCommentsView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final commentController = useTextEditingController();
+    final autofocus = useState<bool>(false);
     final hasText = useState(false);
     final request = useState(
       RequestForPostAndComments(postId: postId),
@@ -76,6 +78,13 @@ class PostCommentsView extends HookConsumerWidget {
                         final comment = comments.elementAt(index);
                         return CommentTile(
                           comment: comment,
+                          onReply: (comment) {
+                            final user = ref.read(userInfoModelProvider(comment.fromUserId));
+                            user.whenData((value) {
+                              commentController.text = "@${value.displayName}";
+                              autofocus.value = true;
+                            });
+                          },
                         );
                       },
                     ),
@@ -101,6 +110,7 @@ class PostCommentsView extends HookConsumerWidget {
                         child: TextField(
                           textInputAction: TextInputAction.send,
                           controller: commentController,
+                          autofocus: autofocus.value,
                           onSubmitted: (comment) {
                             if (comment.isNotEmpty) {
                               _submitCommentWithController(

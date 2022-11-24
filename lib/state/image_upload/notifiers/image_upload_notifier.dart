@@ -33,7 +33,6 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
     UserInfoModel? userData,
   }) async {
     isLoading = true;
-
     late Uint8List thumbnailUint8List;
 
     switch (fileType) {

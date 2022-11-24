@@ -36,6 +36,18 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
   Widget build(BuildContext context) {
     final userInfoModel = ref.watch(userInfoModelProvider(widget.post.userId));
     final editTextController = useTextEditingController(text: widget.post.message);
+    final isPostButtonEnabled = useState(true);
+
+    useEffect(() {
+      void listener() {
+        isPostButtonEnabled.value = editTextController.text.isNotEmpty;
+      }
+
+      editTextController.addListener(listener);
+      return () {
+        editTextController.removeListener(listener);
+      };
+    }, [editTextController]);
     final request = RequestForPostAndComments(
         postId: widget.post.postId,
         limit: 3, // at most 3 comments
@@ -50,31 +62,57 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
           title: const Text(Strings.editPost),
           actions: [
             IconButton(
-              onPressed: () async {
-                final result = await ref.read(editPostProvider.notifier).editPost(
-                      userId: widget.post.userId,
-                      postId: widget.post.postId,
-                      message: editTextController.text.trim(),
-                      file: mediaFile.value,
-                      fileType: thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
-                      originalFileStorageId: widget.post.originalFileStorageId,
-                      thumbnailStorageId: widget.post.thumbnailStorageId,
-                    );
+              onPressed: isPostButtonEnabled.value
+                  ? () async {
+                      if (thumbnailRequest.value != null) {
+                        final result = await ref.read(editPostProvider.notifier).editImagePost(
+                              userId: widget.post.userId,
+                              postId: widget.post.postId,
+                              message: editTextController.text.trim(),
+                              file: mediaFile.value!,
+                              fileType:
+                                  thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
+                              originalFileStorageId: widget.post.originalFileStorageId,
+                              thumbnailStorageId: widget.post.thumbnailStorageId,
+                            );
 
-                log("RESULT: $result");
+                        log("RESULT: $result");
+                        if (result != null) {
+                          if (result && mounted) {
+                            editTextController.clear();
+                            ref.refresh(specificPostWithCommentsProvider(request));
+                            Utilities.closeActivity(context);
+                          }
+                        }
+                      } else {
+                        final result = await ref.read(editPostProvider.notifier).editPost(
+                              userId: widget.post.userId,
+                              postId: widget.post.postId,
+                              message: editTextController.text.trim(),
+                              file: mediaFile.value,
+                              fileType:
+                                  thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
+                              originalFileStorageId: widget.post.originalFileStorageId,
+                              thumbnailStorageId: widget.post.thumbnailStorageId,
+                            );
 
-                if (result && mounted) {
-                  editTextController.clear();
-                  ref.refresh(specificPostWithCommentsProvider(request));
-                  Utilities.closeActivity(context);
-                }
-              },
+                        log("RESULT: $result");
+
+                        if (result && mounted) {
+                          editTextController.clear();
+                          ref.refresh(specificPostWithCommentsProvider(request));
+                          Utilities.closeActivity(context);
+                        }
+                      }
+                    }
+                  : null,
               icon: const Icon(Icons.check),
             ),
           ],
         ),
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               userInfoModel.when(
                 data: (userInfoModel) {

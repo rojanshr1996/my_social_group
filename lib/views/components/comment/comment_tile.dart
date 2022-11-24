@@ -16,7 +16,8 @@ import 'package:tekk_gram/views/constans/app_colors.dart';
 
 class CommentTile extends HookConsumerWidget {
   final Comment comment;
-  const CommentTile({super.key, required this.comment});
+  final Function(Comment comment)? onReply;
+  const CommentTile({super.key, required this.comment, this.onReply});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,46 +28,86 @@ class CommentTile extends HookConsumerWidget {
     return userInfo.when(data: (userInfoModel) {
       final currentUserId = ref.read(userIdProvider);
 
-      return ListTile(
-        title: Text(userInfoModel.displayName),
-        subtitle: Text(comment.comment),
-        trailing: currentUserId == comment.fromUserId
-            ? SizedBox(
-                width: 60,
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return CommentUpdateDialog(comment: comment);
+      return Column(
+        children: [
+          ListTile(
+            title: Text(userInfoModel.displayName),
+            subtitle: Text.rich(
+              TextSpan(
+                  text: '',
+                  children: comment.comment.split(' ').map((w) {
+                    return w.startsWith('@') && w.length > 1
+                        ? TextSpan(
+                            text: ' ${w.substring(0)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+                            // recognizer: TapGestureRecognizer()..onTap = () => showProfile(w),
+                          )
+                        : TextSpan(text: ' $w');
+                  }).toList()),
+            ),
+            trailing: currentUserId == comment.fromUserId
+                ? SizedBox(
+                    width: 60,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return CommentUpdateDialog(comment: comment);
+                              },
+                            ).then((value) {
+                              ref.refresh(postCommentsProvider(request.value));
+                            });
                           },
-                        ).then((value) {
-                          ref.refresh(postCommentsProvider(request.value));
-                        });
-                      },
-                      child: const Icon(Icons.edit, size: 20),
-                    ),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: () async {
-                        final shouldDeleteComment = await displayDeleteDialog(context);
+                          child: const Icon(Icons.edit, size: 20),
+                        ),
+                        const SizedBox(width: 16),
+                        GestureDetector(
+                          onTap: () async {
+                            final shouldDeleteComment = await displayDeleteDialog(context);
 
-                        if (shouldDeleteComment) {
-                          await ref.read(deleteCommentProvider.notifier).deleteComment(commentId: comment.id);
-                        }
-                      },
-                      child: Icon(
-                        Icons.delete,
-                        size: 20,
-                        color: AppColors.loginButtonColor,
-                      ),
+                            if (shouldDeleteComment) {
+                              await ref.read(deleteCommentProvider.notifier).deleteComment(commentId: comment.id);
+                            }
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: AppColors.loginButtonColor,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )
-            : const SizedBox.shrink(),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              children: [
+                TextButton(
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(50, 10),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        alignment: Alignment.centerLeft),
+                    onPressed: () {
+                      if (onReply != null) {
+                        onReply!(comment);
+                      }
+                    },
+                    child: const Text(
+                      "Reply",
+                    ))
+              ],
+            ),
+          )
+        ],
       );
     }, error: (error, stackTrace) {
       return const SmallErrorAnimationView();
