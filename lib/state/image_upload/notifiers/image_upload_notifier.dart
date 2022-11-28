@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io' show File;
 import 'dart:typed_data';
 
@@ -88,13 +89,21 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
     final fileName = const Uuid().v4();
 
     // create references to the thumbnail and the image itself
-    final thumbnailRef =
-        FirebaseStorage.instance.ref().child(userId).child(FirebaseCollectionName.thumbnails).child(fileName);
+    final thumbnailRef = FirebaseStorage.instance
+        .ref()
+        .child(userId)
+        .child(FirebaseCollectionName.thumbnails)
+        .child(fileName);
 
-    final originalFileRef = FirebaseStorage.instance.ref().child(userId).child(fileType.collectionName).child(fileName);
+    final originalFileRef = FirebaseStorage.instance
+        .ref()
+        .child(userId)
+        .child(fileType.collectionName)
+        .child(fileName);
     try {
       // upload the thumbnai
-      final thumbnailUploadTask = await thumbnailRef.putData(thumbnailUint8List);
+      final thumbnailUploadTask =
+          await thumbnailRef.putData(thumbnailUint8List);
       final thumbnailStorageId = thumbnailUploadTask.ref.name;
 
       // upload the original image
@@ -131,9 +140,121 @@ class ImageUploadNotifier extends StateNotifier<IsLoading> {
           originalFileStorageId: originalFileStorageId,
           createdAt: FieldValue.serverTimestamp(),
         );
-        await FirebaseFirestore.instance.collection(FirebaseCollectionName.posts).add(postPayload);
+        await FirebaseFirestore.instance
+            .collection(FirebaseCollectionName.posts)
+            .add(postPayload);
         return true;
       }
+    } catch (_) {
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<bool> uploadMultipleImageFiles({
+    required List<File> files,
+    String? message,
+    Map<PostSettings, bool>? postSettings,
+    required FileType fileType,
+    required String userId,
+    UserInfoModel? userData,
+  }) async {
+    isLoading = true;
+
+    try {
+      var imageUrls = await Future.wait(
+        files.map(
+          (imageFile) => imageUpload(
+            file: imageFile,
+            message: message,
+            postSettings: postSettings,
+            fileType: fileType,
+            userId: userId,
+            userData: userData,
+          ),
+        ),
+      );
+      log(imageUrls.toString());
+      isLoading = false;
+      return true;
+    } catch (_) {
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<bool> imageUpload({
+    required File file,
+    String? message,
+    Map<PostSettings, bool>? postSettings,
+    required FileType fileType,
+    required String userId,
+    UserInfoModel? userData,
+  }) async {
+    isLoading = true;
+    late Uint8List thumbnailUint8List;
+
+    // create a thumbnail out of the file
+    final fileAsImage = img.decodeImage(file.readAsBytesSync());
+    if (fileAsImage == null) {
+      isLoading = false;
+      return false;
+    }
+    // create thumbnail
+    final thumbnail = img.copyResize(
+      fileAsImage,
+      width: Constants.imageThumbnailWidth,
+    );
+    final thumbnailData = img.encodeJpg(thumbnail);
+    thumbnailUint8List = Uint8List.fromList(thumbnailData);
+    // calculate the aspect ratio
+    final thumbnailAspectRatio = await thumbnailUint8List.getAspectRatio();
+
+    // calculate references
+    final fileName = const Uuid().v4();
+
+    // create references to the thumbnail and the image itself
+    final thumbnailRef = FirebaseStorage.instance
+        .ref()
+        .child(userId)
+        .child(FirebaseCollectionName.thumbnails)
+        .child(fileName);
+
+    final originalFileRef = FirebaseStorage.instance
+        .ref()
+        .child(userId)
+        .child(fileType.collectionName)
+        .child(fileName);
+    try {
+      // upload the thumbnai
+      final thumbnailUploadTask =
+          await thumbnailRef.putData(thumbnailUint8List);
+      final thumbnailStorageId = thumbnailUploadTask.ref.name;
+
+      // upload the original image
+      final originalFileUploadTask = await originalFileRef.putFile(file);
+      final originalFileStorageId = originalFileUploadTask.ref.name;
+
+      //  // upload the post itself
+      //   final postPayload = PostPayload(
+      //     userId: userId,
+      //     message: message ?? "",
+      //     thumbnailUrl: await thumbnailRef.getDownloadURL(),
+      //     fileUrl: await originalFileRef.getDownloadURL(),
+      //     fileType: fileType,
+      //     fileName: fileName,
+      //     aspectRatio: thumbnailAspectRatio,
+      //     postSettings: postSettings!,
+      //     thumbnailStorageId: thumbnailStorageId,
+      //     originalFileStorageId: originalFileStorageId,
+      //     createdAt: FieldValue.serverTimestamp(),
+      //   );
+      //   await FirebaseFirestore.instance
+      //       .collection(FirebaseCollectionName.posts)
+      //       .add(postPayload);
+      return true;
     } catch (_) {
       return false;
     } finally {

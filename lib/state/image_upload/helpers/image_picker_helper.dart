@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' show immutable;
@@ -8,13 +9,24 @@ import 'package:tekk_gram/state/image_upload/extensions/to_file.dart';
 class ImagePickerHelper {
   static final ImagePicker _imagePicker = ImagePicker();
 
-  static Future<File?> pickImageFromGallery() =>
-      _imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50).toFile();
+  static Future<File?> pickImageFromGallery() => _imagePicker
+      .pickImage(source: ImageSource.gallery, imageQuality: 50)
+      .toFile();
 
-  static Future<File?> picImageFromCamera() =>
-      _imagePicker.pickImage(source: ImageSource.camera, imageQuality: 50).toFile();
+  static Future<File?> picImageFromCamera() => _imagePicker
+      .pickImage(source: ImageSource.camera, imageQuality: 50)
+      .toFile();
 
-  static Future<File?> pickVideoFromGallery() => _imagePicker.pickVideo(source: ImageSource.gallery).toFile();
+  static Future<List<File>> pickMultiImageFromGallery() async {
+    final imageList = await _imagePicker.pickMultiImage(imageQuality: 50);
+    log("$imageList");
 
-  static Future<File?> pickVideoFromCamera() => _imagePicker.pickVideo(source: ImageSource.camera).toFile();
+    return imageList.map<File>((xfile) => File(xfile.path)).take(4).toList();
+  }
+
+  static Future<File?> pickVideoFromGallery() =>
+      _imagePicker.pickVideo(source: ImageSource.gallery).toFile();
+
+  static Future<File?> pickVideoFromCamera() =>
+      _imagePicker.pickVideo(source: ImageSource.camera).toFile();
 }
