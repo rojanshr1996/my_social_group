@@ -35,21 +35,22 @@ class PostLikeCommentCount extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                    child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "$likesCount",
-                        style: const TextStyle(
-                            fontSize: 12, color: AppColors.loginButtonTextColor, fontWeight: FontWeight.w500),
-                      ),
-                      TextSpan(
-                        text: likesText,
-                        style: const TextStyle(fontSize: 10, color: AppColors.loginButtonTextColor),
-                      ),
-                    ],
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "$likesCount",
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.loginButtonTextColor, fontWeight: FontWeight.w500),
+                        ),
+                        TextSpan(
+                          text: likesText,
+                          style: const TextStyle(fontSize: 10, color: AppColors.loginButtonTextColor),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             );
           },

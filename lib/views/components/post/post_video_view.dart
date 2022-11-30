@@ -15,7 +15,7 @@ class PostVideoView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = VideoPlayerController.network(post.fileUrl);
+    final controller = VideoPlayerController.network(post.fileUrl.first);
     final isVideoPlayerReady = useState(false);
 
     useEffect(
@@ -35,7 +35,7 @@ class PostVideoView extends HookWidget {
     switch (isVideoPlayerReady.value) {
       case true:
         return AspectRatio(
-          aspectRatio: post.aspectRatio,
+          aspectRatio: post.aspectRatio.first,
           child: VideoPlayer(controller),
         );
       case false:

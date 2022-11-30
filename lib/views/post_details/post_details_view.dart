@@ -66,7 +66,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                   IconButton(
                     icon: const Icon(Icons.share, size: 20),
                     onPressed: () {
-                      final url = postWithComments.post.fileUrl;
+                      final url = postWithComments.post.fileUrl.first;
                       Share.share(url, subject: Strings.checkOutThisPost);
                     },
                   ),
@@ -127,7 +127,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                 GestureDetector(
                   onTap: postWithComments.post.fileType == FileType.image
                       ? () {
-                          Utilities.openActivity(context, EnlargeImage(imageUrl: postWithComments.post.fileUrl));
+                          Utilities.openActivity(context, EnlargeImage(imageUrl: postWithComments.post.fileUrl.first));
                         }
                       : null,
                   child: PostImageOrVideoView(post: postWithComments.post),
@@ -150,7 +150,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                 ),
                 // post details (shows divider at bottom)
                 PostDisplayNameAndMessageView(post: postWithComments.post),
-                PostDateView(dateTime: postWithComments.post.createdAt),
+                PostDateView(dateTime: postWithComments.post.createdAt!),
                 const Padding(
                   padding: EdgeInsets.all(12.0),
                   child: Divider(color: Colors.white70),

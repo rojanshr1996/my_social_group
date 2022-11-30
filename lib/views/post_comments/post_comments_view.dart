@@ -81,7 +81,7 @@ class PostCommentsView extends HookConsumerWidget {
                           onReply: (comment) {
                             final user = ref.read(userInfoModelProvider(comment.fromUserId));
                             user.whenData((value) {
-                              commentController.text = "@${value.displayName}";
+                              commentController.text = "@${value.displayName.replaceAll(" ", "")}";
                               autofocus.value = true;
                             });
                           },

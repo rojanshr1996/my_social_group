@@ -13,6 +13,7 @@ import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/camera_gallery_selection_widget.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
+import 'package:tekk_gram/views/create_new_post/create_new_post_list_view.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
 import 'package:tekk_gram/views/tabs/home/home_view.dart';
 import 'package:tekk_gram/views/tabs/search/search_view.dart';
@@ -43,6 +44,7 @@ class _MainViewState extends ConsumerState<MainView> {
         appBar: AppBar(
           elevation: 0,
           title: const Text(Strings.appName),
+          automaticallyImplyLeading: false,
           backgroundColor: AppColors.transparent,
           actions: [
             bottomNavIndex == 0
@@ -65,10 +67,7 @@ class _MainViewState extends ConsumerState<MainView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CreateNewPostView(
-                            fileType: FileType.video,
-                            fileToPost: videoFile,
-                          ),
+                          builder: (_) => CreateNewPostView(fileType: FileType.video, fileToPost: videoFile),
                         ),
                       );
                     },
@@ -94,12 +93,21 @@ class _MainViewState extends ConsumerState<MainView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CreateNewPostView(
+                          builder: (_) => CreateNewPostListView(
                             fileType: FileType.image,
                             fileToPost: imageFile,
                           ),
                         ),
                       );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => CreateNewPostView(
+                      //       fileType: FileType.image,
+                      //       fileToPost: imageFile,
+                      //     ),
+                      //   ),
+                      // );
                     },
                     icon: const Icon(Icons.add_photo_alternate_outlined),
                   )
@@ -242,17 +250,19 @@ class _MainViewState extends ConsumerState<MainView> {
                       Utilities.returnDataCloseActivity(context, videoFile);
                     } else {
                       final imageFile = await ImagePickerHelper.picImageFromCamera();
+
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, imageFile);
+                      Utilities.returnDataCloseActivity(context, [imageFile]);
                     }
                   },
                   onGallaryTap: () async {
                     if (isVideo) {
-                      final videoFile = await ImagePickerHelper.pickImageFromGallery();
+                      final videoFile = await ImagePickerHelper.pickVideoFromGallery();
                       if (!mounted) return;
                       Utilities.returnDataCloseActivity(context, videoFile);
                     } else {
-                      final imageFile = await ImagePickerHelper.pickImageFromGallery();
+                      final imageFile = await ImagePickerHelper.pickMultiImageFromGallery();
+
                       if (!mounted) return;
                       Utilities.returnDataCloseActivity(context, imageFile);
                     }

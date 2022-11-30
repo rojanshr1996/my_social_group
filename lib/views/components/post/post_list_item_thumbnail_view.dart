@@ -1,8 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/enums/date_sorting.dart';
 import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
+import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
 import 'package:tekk_gram/state/posts/providers/specific_post_with_comment_provider.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
@@ -11,9 +14,10 @@ import 'package:tekk_gram/views/components/comment/compact_comment_column.dart';
 import 'package:tekk_gram/views/components/like_button.dart';
 import 'package:tekk_gram/views/components/post/post_like_comment_count.dart';
 import 'package:tekk_gram/views/components/post/post_user_info.dart';
+import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/post_comments/post_comments_view.dart';
 
-class PostListItemThumbnailView extends ConsumerWidget {
+class PostListItemThumbnailView extends HookConsumerWidget {
   final VoidCallback onTapped;
   final Post post;
   const PostListItemThumbnailView({super.key, required this.onTapped, required this.post});
@@ -27,6 +31,8 @@ class PostListItemThumbnailView extends ConsumerWidget {
         sortByCreatedAt: true,
         dateSorting: DateSorting.oldestOnTop);
     final postWithComments = ref.watch(specificPostWithCommentsProvider(request));
+    final currentPos = useState<int>(0);
+    CarouselController controller = CarouselController();
 
     return userInfoModel.when(
       data: (userInfoModel) {
@@ -45,23 +51,42 @@ class PostListItemThumbnailView extends ConsumerWidget {
                     Container(
                       constraints: BoxConstraints(
                         minHeight: Utilities.screenHeight(context) * 0.25,
-                        maxHeight: Utilities.screenHeight(context) * 0.6,
+                        maxHeight: Utilities.screenHeight(context) * 0.55,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Stack(
                           fit: StackFit.passthrough,
                           children: [
-                            post.thumbnailUrl == ""
+                            post.thumbnailUrl.isEmpty
                                 ? const SizedBox()
-                                : Image.network(
-                                    post.thumbnailUrl,
-                                    fit: BoxFit.cover,
+                                : SizedBox(
+                                    child: CarouselSlider.builder(
+                                      carouselController: controller,
+                                      itemCount: post.thumbnailUrl.length,
+                                      options: CarouselOptions(
+                                        aspectRatio: 0.8,
+                                        viewportFraction: 1,
+                                        enlargeCenterPage: true,
+                                        autoPlay: false,
+                                        enableInfiniteScroll: false,
+                                        onPageChanged: (index, reason) {
+                                          currentPos.value = index;
+                                        },
+                                      ),
+                                      itemBuilder: (ctx, index, realIdx) {
+                                        return Image.network(
+                                          post.thumbnailUrl[index],
+                                          fit: BoxFit.cover,
+                                          width: Utilities.screenWidth(context),
+                                        );
+                                      },
+                                    ),
                                   ),
                             Positioned(
                               top: -0.5,
                               child: PostUserInfo(
-                                createdAt: post.createdAt,
+                                createdAt: post.createdAt == null ? "" : post.createdAt.toString(),
                                 displayName: userInfoModel.displayName,
                                 imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
                                     ? ""
@@ -99,6 +124,27 @@ class PostListItemThumbnailView extends ConsumerWidget {
                               Utilities.openActivity(context, PostCommentsView(postId: postId));
                             },
                           ),
+                        const Spacer(),
+                        postWithComments.post.fileType == FileType.video
+                            ? const SizedBox.shrink()
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: post.fileUrl.map((url) {
+                                  int index = post.fileUrl.indexOf(url);
+                                  return Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 10.0,
+                                    height: 10.0,
+                                    margin: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: currentPos.value == index
+                                          ? AppColors.loginButtonColor
+                                          : AppColors.loginButtonTextColor,
+                                    ),
+                                  );
+                                }).toList(),
+                              )
                       ],
                     ),
                     CompactCommentsColumn(comments: postWithComments.comments),

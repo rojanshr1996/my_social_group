@@ -69,7 +69,7 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                               userId: widget.post.userId,
                               postId: widget.post.postId,
                               message: editTextController.text.trim(),
-                              file: mediaFile.value!,
+                              files: [mediaFile.value!],
                               fileType:
                                   thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
                               originalFileStorageId: widget.post.originalFileStorageId,
@@ -92,8 +92,8 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                               file: mediaFile.value,
                               fileType:
                                   thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
-                              originalFileStorageId: widget.post.originalFileStorageId,
-                              thumbnailStorageId: widget.post.thumbnailStorageId,
+                              originalFileStorageId: widget.post.originalFileStorageId.first,
+                              thumbnailStorageId: widget.post.thumbnailStorageId.first,
                             );
 
                         log("RESULT: $result");
@@ -117,7 +117,7 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
               userInfoModel.when(
                 data: (userInfoModel) {
                   return PostUserInfo(
-                    createdAt: widget.post.createdAt,
+                    createdAt: widget.post.createdAt == null ? "" : widget.post.createdAt.toString(),
                     displayName: userInfoModel.displayName,
                     imageUrl:
                         userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null ? "" : userInfoModel.imageUrl!,
