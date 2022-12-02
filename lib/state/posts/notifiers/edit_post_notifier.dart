@@ -75,6 +75,9 @@ class EditPostNotifier extends StateNotifier<IsLoading> {
     List<double> thumbnailAspectRatioList = [];
     List<String> thumbnailUrlList = [];
     List<String> originalUrlList = [];
+
+    isLoading = true;
+
     try {
       final postData = await FirebaseFirestore.instance
           .collection(FirebaseCollectionName.posts)
@@ -84,7 +87,6 @@ class EditPostNotifier extends StateNotifier<IsLoading> {
 
       final post = postData.docs.where((data) => data.id == postId);
       if (post.isNotEmpty) {
-        isLoading = true;
         late Uint8List thumbnailUint8List;
 
         await Future.forEach(files, (file) async {
@@ -129,7 +131,7 @@ class EditPostNotifier extends StateNotifier<IsLoading> {
           thumbnailAspectRatioList.add(thumbnailAspectRatio);
 
           final fileName = const Uuid().v4();
-          fileNameList.add(const Uuid().v4());
+          fileNameList.add(fileName);
 
           // create references to the thumbnail and the image itself
           final thumbnailRef =
@@ -172,23 +174,23 @@ class EditPostNotifier extends StateNotifier<IsLoading> {
           originalStorageIdList.add(originalFileStorageId);
           final orgUrl = await originalFileUploadTask.ref.getDownloadURL();
           originalUrlList.add(orgUrl);
-
-          await postData.docs.first.reference.update({
-            PostKey.userId: userId,
-            PostKey.message: message,
-            PostKey.thumbnailUrl: thumbnailUrlList,
-            PostKey.fileUrl: originalUrlList,
-            PostKey.fileType: fileType.name,
-            PostKey.fileName: fileNameList,
-            PostKey.aspectRatio: thumbnailAspectRatioList,
-            PostKey.thumbnailStorageId: thumbnailStorageIdList,
-            PostKey.originalFileStorageId: originalStorageIdList,
-          });
-          return true;
         });
-      }
 
-      return null;
+        await postData.docs.first.reference.update({
+          PostKey.userId: userId,
+          PostKey.message: message,
+          PostKey.thumbnailUrl: thumbnailUrlList,
+          PostKey.fileUrl: originalUrlList,
+          PostKey.fileType: fileType.name,
+          PostKey.fileName: fileNameList,
+          PostKey.aspectRatio: thumbnailAspectRatioList,
+          PostKey.thumbnailStorageId: thumbnailStorageIdList,
+          PostKey.originalFileStorageId: originalStorageIdList,
+        });
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       log("THIS IS TEH ERROR: $e");
       return false;

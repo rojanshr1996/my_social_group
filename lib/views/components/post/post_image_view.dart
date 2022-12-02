@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
 import 'package:tekk_gram/utils/utilities.dart';
+import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 
 class PostImageView extends HookWidget {
@@ -33,16 +34,21 @@ class PostImageView extends HookWidget {
                 currentPos.value = index;
               }),
           itemBuilder: (ctx, index, realIdx) {
-            return Image.network(
-              post.fileUrl[index],
-              fit: BoxFit.cover,
-              width: Utilities.screenWidth(context),
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+            return GestureDetector(
+              onTap: () {
+                Utilities.openActivity(context, EnlargeImage(imageUrl: post.fileUrl[index]));
               },
+              child: Image.network(
+                post.fileUrl[index],
+                fit: BoxFit.cover,
+                width: Utilities.screenWidth(context),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
             );
           },
         ),

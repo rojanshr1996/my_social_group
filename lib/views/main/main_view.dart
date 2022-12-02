@@ -64,12 +64,6 @@ class _MainViewState extends ConsumerState<MainView> {
                       if (!mounted) {
                         return;
                       }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateNewPostView(fileType: FileType.video, fileToPost: videoFile),
-                        ),
-                      );
                     },
                   )
                 : const SizedBox.shrink(),
@@ -77,28 +71,20 @@ class _MainViewState extends ConsumerState<MainView> {
                 ? IconButton(
                     onPressed: () async {
                       // pick an image first
-                      final imageFile = await openCameraOption(context);
-                      log("IMAGE: $imageFile");
-                      // final imageFile = await ImagePickerHelper.pickImageFromGallery();
-                      if (imageFile == null) {
-                        return;
-                      }
-                      // reset the postSettingProvider
-                      ref.refresh(postSettingsProvider);
+                      openCameraOption(context).then((imageFile) {
+                        if (imageFile == null) {
+                          return;
+                        }
+                        // reset the postSettingProvider
+                        ref.refresh(postSettingsProvider);
 
-                      // go to the screen to create a new post
-                      if (!mounted) {
-                        return;
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateNewPostListView(
-                            fileType: FileType.image,
-                            fileToPost: imageFile,
-                          ),
-                        ),
-                      );
+                        // go to the screen to create a new post
+                        if (!mounted) {
+                          return;
+                        }
+                      });
+                      // final imageFile = await ImagePickerHelper.pickImageFromGallery();
+
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -247,24 +233,72 @@ class _MainViewState extends ConsumerState<MainView> {
                     if (isVideo) {
                       final videoFile = await ImagePickerHelper.pickVideoFromCamera();
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, videoFile);
+                      // Utilities.returnDataCloseActivity(context, videoFile);
+                      if (videoFile != null) {
+                        ref.refresh(postSettingsProvider);
+                        Utilities.closeActivity(ctx);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CreateNewPostView(fileType: FileType.video, fileToPost: videoFile),
+                          ),
+                        );
+                      }
                     } else {
                       final imageFile = await ImagePickerHelper.picImageFromCamera();
 
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, [imageFile]);
+                      if (imageFile != null) {
+                        ref.refresh(postSettingsProvider);
+                        Utilities.closeActivity(ctx);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CreateNewPostListView(
+                              fileType: FileType.image,
+                              fileToPost: [imageFile],
+                            ),
+                          ),
+                        );
+                      }
                     }
                   },
                   onGallaryTap: () async {
                     if (isVideo) {
                       final videoFile = await ImagePickerHelper.pickVideoFromGallery();
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, videoFile);
+                      // Utilities.returnDataCloseActivity(context, videoFile);
+                      if (videoFile != null) {
+                        ref.refresh(postSettingsProvider);
+                        Utilities.closeActivity(ctx);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CreateNewPostView(fileType: FileType.video, fileToPost: videoFile),
+                          ),
+                        );
+                      }
                     } else {
                       final imageFile = await ImagePickerHelper.pickMultiImageFromGallery();
+                      log("IMAGE: $imageFile");
 
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, imageFile);
+                      // Utilities.returnDataCloseActivity(context, imageFile);
+                      ref.refresh(postSettingsProvider);
+                      Utilities.closeActivity(ctx);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CreateNewPostListView(
+                            fileType: FileType.image,
+                            fileToPost: imageFile,
+                          ),
+                        ),
+                      );
                     }
                   },
                 ),

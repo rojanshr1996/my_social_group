@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -53,8 +54,8 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
         limit: 3, // at most 3 comments
         sortByCreatedAt: true,
         dateSorting: DateSorting.oldestOnTop);
-    final mediaFile = useState<File?>(null);
-    final thumbnailRequest = useState<ThumbnailRequest?>(null);
+    final mediaFile = useState<List<File>>([]);
+    final thumbnailRequest = useState<List<ThumbnailRequest>>([]);
 
     return RemoveFocus(
       child: Scaffold(
@@ -64,14 +65,15 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
             IconButton(
               onPressed: isPostButtonEnabled.value
                   ? () async {
-                      if (thumbnailRequest.value != null) {
+                      if (thumbnailRequest.value.isNotEmpty) {
                         final result = await ref.read(editPostProvider.notifier).editImagePost(
                               userId: widget.post.userId,
                               postId: widget.post.postId,
                               message: editTextController.text.trim(),
-                              files: [mediaFile.value!],
-                              fileType:
-                                  thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
+                              files: mediaFile.value,
+                              fileType: thumbnailRequest.value.isEmpty
+                                  ? FileType.image
+                                  : thumbnailRequest.value.first.fileType,
                               originalFileStorageId: widget.post.originalFileStorageId,
                               thumbnailStorageId: widget.post.thumbnailStorageId,
                             );
@@ -89,9 +91,10 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                               userId: widget.post.userId,
                               postId: widget.post.postId,
                               message: editTextController.text.trim(),
-                              file: mediaFile.value,
-                              fileType:
-                                  thumbnailRequest.value == null ? FileType.image : thumbnailRequest.value!.fileType,
+                              file: mediaFile.value.first,
+                              fileType: thumbnailRequest.value.isEmpty
+                                  ? FileType.image
+                                  : thumbnailRequest.value.first.fileType,
                               originalFileStorageId: widget.post.originalFileStorageId.first,
                               thumbnailStorageId: widget.post.thumbnailStorageId.first,
                             );
@@ -145,12 +148,25 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Stack(
                   children: [
-                    mediaFile.value == null
+                    mediaFile.value.isEmpty
                         ? PostImageOrVideoView(
                             post: widget.post,
                           )
-                        : FileThumbnailView(
-                            thumbnailRequest: thumbnailRequest.value!,
+                        : CarouselSlider.builder(
+                            itemCount: thumbnailRequest.value.length,
+                            options: CarouselOptions(
+                              aspectRatio: 0.9,
+                              viewportFraction: 0.95,
+                              enlargeCenterPage: true,
+                              autoPlay: false,
+                              enableInfiniteScroll: false,
+                              onPageChanged: (index, reason) {},
+                            ),
+                            itemBuilder: (ctx, index, realIdx) {
+                              return FileThumbnailView(
+                                thumbnailRequest: thumbnailRequest.value[index],
+                              );
+                            },
                           ),
                     Positioned(
                       top: 10,
@@ -167,7 +183,13 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                               return;
                             }
                             mediaFile.value = image;
-                            thumbnailRequest.value = ThumbnailRequest(file: mediaFile.value!, fileType: FileType.image);
+                            if (mediaFile.value.isNotEmpty) {
+                              mediaFile.value.map((file) {
+                                thumbnailRequest.value.add(
+                                  ThumbnailRequest(file: file, fileType: FileType.image),
+                                );
+                              }).toList();
+                            }
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -194,7 +216,13 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                               return;
                             }
                             mediaFile.value = image;
-                            thumbnailRequest.value = ThumbnailRequest(file: mediaFile.value!, fileType: FileType.video);
+                            if (mediaFile.value.isNotEmpty) {
+                              mediaFile.value.map((file) {
+                                thumbnailRequest.value.add(
+                                  ThumbnailRequest(file: file, fileType: FileType.video),
+                                );
+                              }).toList();
+                            }
                           },
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -233,20 +261,22 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
                     if (isVideo) {
                       final videoFile = await ImagePickerHelper.pickVideoFromCamera();
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, videoFile);
+                      Utilities.returnDataCloseActivity(context, [videoFile]);
                     } else {
                       final imageFile = await ImagePickerHelper.picImageFromCamera();
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, imageFile);
+                      Utilities.returnDataCloseActivity(context, [imageFile]);
                     }
                   },
                   onGallaryTap: () async {
                     if (isVideo) {
                       final videoFile = await ImagePickerHelper.pickImageFromGallery();
                       if (!mounted) return;
-                      Utilities.returnDataCloseActivity(context, videoFile);
+                      Utilities.returnDataCloseActivity(context, [videoFile]);
                     } else {
-                      final imageFile = await ImagePickerHelper.pickImageFromGallery();
+                      // final imageFile = await ImagePickerHelper.pickImageFromGallery();
+                      final imageFile = await ImagePickerHelper.pickMultiImageFromGallery();
+
                       if (!mounted) return;
                       Utilities.returnDataCloseActivity(context, imageFile);
                     }
