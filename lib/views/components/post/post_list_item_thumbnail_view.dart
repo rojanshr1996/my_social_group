@@ -121,7 +121,11 @@ class PostListItemThumbnailView extends HookConsumerWidget {
                           IconButton(
                             icon: const FaIcon(FontAwesomeIcons.comment),
                             onPressed: () {
-                              Utilities.openActivity(context, PostCommentsView(postId: postId));
+                              Utilities.openActivity(
+                                  context,
+                                  PostCommentsView(
+                                    post: postWithComments.post,
+                                  ));
                             },
                           ),
                         const Spacer(),
