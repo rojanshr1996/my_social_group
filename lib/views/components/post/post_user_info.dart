@@ -5,7 +5,7 @@ import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 
 class PostUserInfo extends StatelessWidget {
-  final DateTime createdAt;
+  final String createdAt;
   final String displayName;
   final String imageUrl;
   const PostUserInfo({super.key, required this.createdAt, required this.displayName, required this.imageUrl});
@@ -58,7 +58,7 @@ class PostUserInfo extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    formatter.format(createdAt),
+                    createdAt == "" ? "" : formatter.format(DateTime.parse(createdAt)),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 5),

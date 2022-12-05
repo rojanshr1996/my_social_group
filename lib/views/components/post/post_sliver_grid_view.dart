@@ -28,9 +28,7 @@ class PostsSliverGridView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PostDetailsView(
-                    post: post,
-                  ),
+                  builder: (context) => PostDetailsView(post: post),
                 ),
               );
             },

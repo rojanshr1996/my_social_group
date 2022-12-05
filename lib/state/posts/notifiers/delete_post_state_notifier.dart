@@ -17,20 +17,25 @@ class DeletePostStateNotifier extends StateNotifier<IsLoading> {
     try {
       isLoading = true;
       //delete the post thumbnail
-      await FirebaseStorage.instance
-          .ref()
-          .child(post.userId)
-          .child(FirebaseCollectionName.thumbnails)
-          .child(post.thumbnailStorageId)
-          .delete();
 
-      // delete post original file
-      await FirebaseStorage.instance
-          .ref()
-          .child(post.userId)
-          .child(post.fileType.collectionName)
-          .child(post.originalFileStorageId)
-          .delete();
+      for (var element in post.thumbnailStorageId) {
+        await FirebaseStorage.instance
+            .ref()
+            .child(post.userId)
+            .child(FirebaseCollectionName.thumbnails)
+            .child(element)
+            .delete();
+      }
+
+      for (var element in post.originalFileStorageId) {
+        // delete post original file
+        await FirebaseStorage.instance
+            .ref()
+            .child(post.userId)
+            .child(post.fileType.collectionName)
+            .child(element)
+            .delete();
+      }
 
       // delete all comments for the post
       await _deleteAllDocuments(postId: post.postId, inCollection: FirebaseCollectionName.comments);

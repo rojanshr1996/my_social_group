@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tekk_gram/enums/date_sorting.dart';
 import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
-import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
 import 'package:tekk_gram/state/posts/providers/can_current_user_delete_post_provider.dart';
 import 'package:tekk_gram/state/posts/providers/delete_post_provider.dart';
@@ -16,7 +15,6 @@ import 'package:tekk_gram/views/components/animations/small_error_animation_view
 import 'package:tekk_gram/views/components/comment/compact_comment_column.dart';
 import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/delete_dialog.dart';
-import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/components/like_button.dart';
 import 'package:tekk_gram/views/components/likes_count_view.dart';
 import 'package:tekk_gram/views/components/post/post_date_view.dart';
@@ -66,7 +64,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                   IconButton(
                     icon: const Icon(Icons.share, size: 20),
                     onPressed: () {
-                      final url = postWithComments.post.fileUrl;
+                      final url = postWithComments.post.fileUrl.first;
                       Share.share(url, subject: Strings.checkOutThisPost);
                     },
                   ),
@@ -124,14 +122,7 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                GestureDetector(
-                  onTap: postWithComments.post.fileType == FileType.image
-                      ? () {
-                          Utilities.openActivity(context, EnlargeImage(imageUrl: postWithComments.post.fileUrl));
-                        }
-                      : null,
-                  child: PostImageOrVideoView(post: postWithComments.post),
-                ),
+                PostImageOrVideoView(post: postWithComments.post),
                 // like and comment buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -143,14 +134,14 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                       IconButton(
                         icon: const FaIcon(FontAwesomeIcons.comment),
                         onPressed: () {
-                          Utilities.openActivity(context, PostCommentsView(postId: postId));
+                          Utilities.openActivity(context, PostCommentsView(post: postWithComments.post));
                         },
                       ),
                   ],
                 ),
                 // post details (shows divider at bottom)
                 PostDisplayNameAndMessageView(post: postWithComments.post),
-                PostDateView(dateTime: postWithComments.post.createdAt),
+                PostDateView(dateTime: postWithComments.post.createdAt!),
                 const Padding(
                   padding: EdgeInsets.all(12.0),
                   child: Divider(color: Colors.white70),

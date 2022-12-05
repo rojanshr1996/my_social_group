@@ -1,14 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tekk_gram/splash_screen.dart';
 
 import 'dart:developer' as devtools show log;
-
-import 'package:tekk_gram/state/auth/providers/is_logged_in_provider.dart';
-import 'package:tekk_gram/state/providers/is_loading_provider.dart';
-import 'package:tekk_gram/views/components/loading/loading_screen.dart';
-import 'package:tekk_gram/views/login/login_view.dart';
-import 'package:tekk_gram/views/main/main_view.dart';
 
 extension Log on Object {
   void log() => devtools.log(toString());
@@ -39,29 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
-      home: Consumer(
-        builder: (context, ref, child) {
-          ref.listen<bool>(
-            isLoadingProvider,
-            (_, isLoading) {
-              ("LOADER STATUS: $isLoading").log();
-
-              if (isLoading) {
-                LoadingScreen.instance().show(context: context);
-              } else {
-                LoadingScreen.instance().hide();
-              }
-            },
-          );
-          final isLoggedIn = ref.watch(isLoggedInProvider);
-
-          if (isLoggedIn) {
-            return const MainView();
-          } else {
-            return const LoginView();
-          }
-        },
-      ),
+      home: const SplashScreen(),
     );
   }
 }
