@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
 
     Future.delayed(const Duration(seconds: 2), () {
-      Utilities.openActivity(context, const IndexScreen());
+      Utilities.removeStackActivity(context, const IndexScreen());
     });
   }
 
