@@ -9,12 +9,14 @@ import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/post_settings/providers/post_settings_provider.dart';
 import 'package:tekk_gram/state/toggle_view/toggle_posts_view_provider.dart';
+import 'package:tekk_gram/utils/constants.dart';
 import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/camera_gallery_selection_widget.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_list_view.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
+import 'package:tekk_gram/views/main/speed_dial_menu_button.dart';
 import 'package:tekk_gram/views/tabs/home/home_view.dart';
 import 'package:tekk_gram/views/tabs/search/search_view.dart';
 import 'package:tekk_gram/views/tabs/users_posts/user_posts_view.dart';
@@ -44,60 +46,17 @@ class _MainViewState extends ConsumerState<MainView> {
         appBar: AppBar(
           elevation: 0,
           title: const Text(Strings.appName),
+          centerTitle: false,
           automaticallyImplyLeading: false,
           backgroundColor: AppColors.transparent,
           actions: [
-            bottomNavIndex == 0
-                ? IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.film),
-                    onPressed: () async {
-                      // pick a video first
-                      final videoFile = await openCameraOption(context, isVideo: true);
-                      if (videoFile == null) {
-                        return;
-                      }
-
-                      // reset the postSettingProvider
-                      ref.refresh(postSettingsProvider);
-
-                      // go to the screen to create a new post
-                      if (!mounted) {
-                        return;
-                      }
-                    },
-                  )
-                : const SizedBox.shrink(),
-            bottomNavIndex == 0
-                ? IconButton(
-                    onPressed: () async {
-                      // pick an image first
-                      openCameraOption(context).then((imageFile) {
-                        if (imageFile == null) {
-                          return;
-                        }
-                        // reset the postSettingProvider
-                        ref.refresh(postSettingsProvider);
-
-                        // go to the screen to create a new post
-                        if (!mounted) {
-                          return;
-                        }
-                      });
-                      // final imageFile = await ImagePickerHelper.pickImageFromGallery();
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => CreateNewPostView(
-                      //       fileType: FileType.image,
-                      //       fileToPost: imageFile,
-                      //     ),
-                      //   ),
-                      // );
-                    },
-                    icon: const Icon(Icons.add_photo_alternate_outlined),
-                  )
-                : const SizedBox.shrink(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Image.asset(
+                appLogo,
+                width: 85,
+              ),
+            )
           ],
         ),
         body: Column(
@@ -105,7 +64,6 @@ class _MainViewState extends ConsumerState<MainView> {
             Consumer(
               builder: (contzext, ref, child) {
                 final toggleValue = ref.watch(togglePostsViewProvider);
-
                 return Container(
                   decoration:
                       BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).bottomAppBarColor))),
@@ -169,47 +127,86 @@ class _MainViewState extends ConsumerState<MainView> {
           duration: const Duration(milliseconds: 300),
           scale: showBottomNavBar ? 1 : 0,
           alignment: Alignment.bottomCenter,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: BottomNavigationBar(
-                backgroundColor: AppColors.loginButtonColor,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: FaIcon(FontAwesomeIcons.house),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: BottomNavigationBar(
+                      backgroundColor: AppColors.loginButtonColor,
+                      items: const <BottomNavigationBarItem>[
+                        BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
+                            child: FaIcon(FontAwesomeIcons.house),
+                          ),
+                          label: 'Home',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
+                            child: FaIcon(FontAwesomeIcons.magnifyingGlass),
+                          ),
+                          label: 'Search',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4.0),
+                            child: FaIcon(FontAwesomeIcons.user),
+                          ),
+                          label: 'User',
+                        ),
+                      ],
+                      currentIndex: bottomNavIndex,
+                      iconSize: 18,
+                      selectedFontSize: 12,
+                      selectedItemColor: AppColors.googleColor,
+                      onTap: (value) {
+                        ref.read(bottomNavIndexProvider.notifier).changeIndex(index: value);
+                      },
+                      // showSelectedLabels: false,
+                      showUnselectedLabels: false,
+                      enableFeedback: true,
                     ),
-                    label: 'Home',
                   ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: FaIcon(FontAwesomeIcons.magnifyingGlass),
-                    ),
-                    label: 'Search',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: FaIcon(FontAwesomeIcons.user),
-                    ),
-                    label: 'User',
-                  ),
-                ],
-                currentIndex: bottomNavIndex,
-                iconSize: 18,
-                selectedFontSize: 12,
-                selectedItemColor: AppColors.googleColor,
-                onTap: (value) {
-                  ref.read(bottomNavIndexProvider.notifier).changeIndex(index: value);
-                },
-                // showSelectedLabels: false,
-                showUnselectedLabels: false,
-                enableFeedback: true,
+                ),
               ),
-            ),
+              bottomNavIndex == 0
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: SpeedDialMenuButton(
+                        onPhotoPressed: () {
+                          openCameraOption(context).then((imageFile) {
+                            if (imageFile == null) {
+                              return;
+                            }
+                            // reset the postSettingProvider
+                            ref.refresh(postSettingsProvider);
+                            // go to the screen to create a new post
+                            if (!mounted) {
+                              return;
+                            }
+                          });
+                        },
+                        onVideoPressed: () async {
+                          // pick a video first
+                          final videoFile = await openCameraOption(context, isVideo: true);
+                          if (videoFile == null) {
+                            return;
+                          }
+                          // reset the postSettingProvider
+                          ref.refresh(postSettingsProvider);
+                          // go to the screen to create a new post
+                          if (!mounted) {
+                            return;
+                          }
+                        },
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
           ),
         ),
       ),
@@ -287,18 +284,21 @@ class _MainViewState extends ConsumerState<MainView> {
 
                       if (!mounted) return;
                       // Utilities.returnDataCloseActivity(context, imageFile);
-                      ref.refresh(postSettingsProvider);
                       Utilities.closeActivity(ctx);
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateNewPostListView(
-                            fileType: FileType.image,
-                            fileToPost: imageFile,
+                      if (imageFile.isNotEmpty) {
+                        ref.refresh(postSettingsProvider);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CreateNewPostListView(
+                              fileType: FileType.image,
+                              fileToPost: imageFile,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
                   },
                 ),
