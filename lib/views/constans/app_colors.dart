@@ -11,6 +11,7 @@ class AppColors {
   static final greenColor = '#48b77e'.htmlColorToColor();
   static final darkColor = '#000000'.htmlColorToColor();
   static const transparent = Colors.transparent;
+  static final greyColor = '#b3b5af'.htmlColorToColor();
 
   static LinearGradient topDarkGradient = LinearGradient(
     stops: const [0.35, 0.9],

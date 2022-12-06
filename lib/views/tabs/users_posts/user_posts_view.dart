@@ -20,7 +20,7 @@ class UserPostsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final posts = ref.watch(userPostsProvider);
+    final posts = ref.watch(authUserPostsProvider);
 
     final userInfoModel = ref.watch(userInfoModelProvider(FirebaseAuth.instance.currentUser!.uid));
     final showBottomNavBar = ref.watch(bottomNavBarScrollVisibilityProvider);
@@ -29,7 +29,7 @@ class UserPostsView extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () {
-        ref.refresh(userPostsProvider);
+        ref.refresh(authUserPostsProvider);
         return Future.delayed(const Duration(seconds: 1));
       },
       child: userInfoModel.when(

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/enums/date_sorting.dart';
+import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
 import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
@@ -16,6 +19,8 @@ import 'package:tekk_gram/views/components/post/post_like_comment_count.dart';
 import 'package:tekk_gram/views/components/post/post_user_info.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/post_comments/post_comments_view.dart';
+import 'package:tekk_gram/views/profile/post_user_profile_view.dart';
+import 'package:tekk_gram/views/profile/user_profile_view.dart';
 
 class PostListItemThumbnailView extends HookConsumerWidget {
   final VoidCallback onTapped;
@@ -85,12 +90,23 @@ class PostListItemThumbnailView extends HookConsumerWidget {
                                   ),
                             Positioned(
                               top: -0.5,
-                              child: PostUserInfo(
-                                createdAt: post.createdAt == null ? "" : post.createdAt.toString(),
-                                displayName: userInfoModel.displayName,
-                                imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
-                                    ? ""
-                                    : userInfoModel.imageUrl!,
+                              child: GestureDetector(
+                                onTap: () {
+                                  final authUser = ref.read(userIdProvider);
+                                  log("USERID: $authUser");
+                                  if (post.userId == authUser) {
+                                    Utilities.openActivity(context, const UserProfileView());
+                                  } else {
+                                    Utilities.openActivity(context, PostUserProfileView(userId: post.userId));
+                                  }
+                                },
+                                child: PostUserInfo(
+                                  createdAt: post.createdAt == null ? "" : post.createdAt.toString(),
+                                  displayName: userInfoModel.displayName,
+                                  imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
+                                      ? ""
+                                      : userInfoModel.imageUrl!,
+                                ),
                               ),
                             ),
                             Positioned(
