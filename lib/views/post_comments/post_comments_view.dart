@@ -6,22 +6,28 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
 import 'package:tekk_gram/state/comments/models/post_comments_request.dart';
+import 'package:tekk_gram/state/comments/providers/delete_comment_provider.dart';
 import 'package:tekk_gram/state/comments/providers/post_comments_provider.dart';
 import 'package:tekk_gram/state/comments/providers/send_comment_provider.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/posts/models/post.dart';
+import 'package:tekk_gram/state/user_info/models/user_info_model.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
 import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/animations/empty_contents_with_text_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/error_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/loading_animation_view.dart';
-import 'package:tekk_gram/views/components/comment/comment_tile.dart';
+import 'package:tekk_gram/views/components/comment/comment_update_dialog.dart';
+import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
+import 'package:tekk_gram/views/components/dialogs/delete_dialog.dart';
 import 'package:tekk_gram/views/components/post/post_like_comment_count.dart';
 import 'package:tekk_gram/views/components/post/post_user_info.dart';
 import 'package:tekk_gram/views/components/remove_focus.dart';
+import 'package:tekk_gram/views/components/strings.dart' as str;
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/extensions/dismiss_keyboard.dart';
+import 'package:tekk_gram/views/post_comments/comment_message_view.dart';
 
 class PostCommentsView extends HookConsumerWidget {
   final Post post;
@@ -45,6 +51,7 @@ class PostCommentsView extends HookConsumerWidget {
       RequestForPostAndComments(postId: post.postId),
     );
     final comments = ref.watch(postCommentsProvider(request.value));
+    final repliedUserModel = useState<UserInfoModel?>(null);
 
     // enable Post button when text is entered in the textfield
     useEffect(
@@ -119,13 +126,7 @@ class PostCommentsView extends HookConsumerWidget {
                                                 ),
                                           Positioned(
                                             top: -0.5,
-                                            child: PostUserInfo(
-                                              createdAt: post.createdAt == null ? "" : post.createdAt.toString(),
-                                              displayName: userInfoModel.displayName,
-                                              imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
-                                                  ? ""
-                                                  : userInfoModel.imageUrl!,
-                                            ),
+                                            child: PostUserInfo(postData: post),
                                           ),
                                           Positioned(
                                             bottom: -0.5,
@@ -192,69 +193,112 @@ class PostCommentsView extends HookConsumerWidget {
                     ),
                   ),
                   Expanded(
-                    flex: 3,
-                    child: comments.when(
-                      data: (comments) {
-                        if (comments.isEmpty) {
-                          return const SingleChildScrollView(
-                            child: EmptyContentsWithTextAnimationView(
-                              text: Strings.noCommentsYet,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: comments.when(
+                        data: (comments) {
+                          if (comments.isEmpty) {
+                            return const SingleChildScrollView(
+                              child: EmptyContentsWithTextAnimationView(
+                                text: Strings.noCommentsYet,
+                              ),
+                            );
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: AppColors.darkColor.withAlpha(50), borderRadius: BorderRadius.circular(10)),
+                            child: RefreshIndicator(
+                              onRefresh: () {
+                                ref.refresh(
+                                  postCommentsProvider(request.value),
+                                );
+                                return Future.delayed(const Duration(seconds: 1));
+                              },
+                              child: CustomScrollView(
+                                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                                slivers: <Widget>[
+                                  SliverPadding(
+                                    padding: const EdgeInsets.all(8),
+                                    sliver: SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                          final comment = comments.elementAt(index);
+                                          return CommentMessageView(
+                                            comment: comment,
+                                            onReply: () {
+                                              final user = ref.read(userInfoModelProvider(comment.fromUserId));
+                                              user.whenData((value) {
+                                                commentController.text = "@${value.displayName.replaceAll(" ", "")}";
+                                                autofocus.value = true;
+                                                repliedUserModel.value = value;
+                                              });
+                                            },
+                                            onEdit: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  return CommentUpdateDialog(comment: comment);
+                                                },
+                                              ).then((value) {
+                                                ref.refresh(postCommentsProvider(request.value));
+                                              });
+                                            },
+                                            onDelete: () async {
+                                              final shouldDeleteComment = await displayDeleteDialog(context);
+
+                                              if (shouldDeleteComment) {
+                                                await ref
+                                                    .read(deleteCommentProvider.notifier)
+                                                    .deleteComment(commentId: comment.id);
+                                              }
+                                            },
+                                          );
+                                        },
+                                        childCount: comments.length,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
-                        }
-                        return RefreshIndicator(
-                          onRefresh: () {
-                            ref.refresh(
-                              postCommentsProvider(request.value),
-                            );
-                            return Future.delayed(const Duration(seconds: 1));
-                          },
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(8.0),
-                            itemCount: comments.length,
-                            itemBuilder: (context, index) {
-                              final comment = comments.elementAt(index);
-                              return CommentTile(
-                                comment: comment,
-                                onReply: (comment) {
-                                  final user = ref.read(userInfoModelProvider(comment.fromUserId));
-                                  user.whenData((value) {
-                                    commentController.text = "@${value.displayName.replaceAll(" ", "")}";
-                                    autofocus.value = true;
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const ErrorAnimationView();
-                      },
-                      loading: () {
-                        return const LoadingAnimationView();
-                      },
+                        },
+                        error: (error, stackTrace) {
+                          return const ErrorAnimationView();
+                        },
+                        loading: () {
+                          return const LoadingAnimationView();
+                        },
+                      ),
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          children: [
-                            Expanded(
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints: const BoxConstraints(maxHeight: 120),
                               child: TextField(
                                 textInputAction: TextInputAction.send,
                                 controller: commentController,
                                 autofocus: autofocus.value,
+                                maxLines: null,
+                                textCapitalization: TextCapitalization.sentences,
                                 onSubmitted: (comment) {
                                   if (comment.isNotEmpty) {
+                                    if (!comment.startsWith("@")) {
+                                      repliedUserModel.value == null;
+                                    }
                                     _submitCommentWithController(
-                                      commentController,
-                                      ref,
+                                      controller: commentController,
+                                      ref: ref,
+                                      userData: repliedUserModel.value,
                                     );
+                                  } else {
+                                    repliedUserModel.value == null;
                                   }
                                 },
                                 decoration: const InputDecoration(
@@ -263,20 +307,18 @@ class PostCommentsView extends HookConsumerWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            IconButton(
-                              icon: const Icon(Icons.send),
-                              onPressed: hasText.value
-                                  ? () {
-                                      _submitCommentWithController(
-                                        commentController,
-                                        ref,
-                                      );
-                                    }
-                                  : null,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 12),
+                          IconButton(
+                            icon: const Icon(Icons.send),
+                            onPressed: hasText.value
+                                ? () {
+                                    _submitCommentWithController(
+                                        controller: commentController, ref: ref, userData: repliedUserModel.value);
+                                  }
+                                : null,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -289,10 +331,14 @@ class PostCommentsView extends HookConsumerWidget {
     );
   }
 
-  Future<void> _submitCommentWithController(
-    TextEditingController controller,
-    WidgetRef ref,
-  ) async {
+  Future<bool> displayDeleteDialog(BuildContext context) =>
+      const DeleteDialog(titleOfObjectToDelete: str.Strings.comment).present(context).then((value) => value ?? false);
+
+  Future<void> _submitCommentWithController({
+    required TextEditingController controller,
+    required WidgetRef ref,
+    required UserInfoModel? userData,
+  }) async {
     final userId = ref.read(userIdProvider);
     if (userId == null) {
       return;
@@ -305,6 +351,16 @@ class PostCommentsView extends HookConsumerWidget {
           fromUserId: userId,
           onPostId: post.postId,
           comment: controller.text,
+          repliedUserName: userData == null
+              ? ""
+              : controller.text.startsWith("@")
+                  ? userData.displayName
+                  : "",
+          repliedUserId: userData == null
+              ? ""
+              : controller.text.startsWith("@")
+                  ? userData.userId
+                  : "",
         );
     if (isSent) {
       controller.clear();
