@@ -16,12 +16,16 @@ class SendCommentNotifier extends StateNotifier<IsLoading> {
     required UserId fromUserId,
     required PostId onPostId,
     required String comment,
+    required String repliedUserName,
+    required UserId repliedUserId,
   }) async {
     isLoading = true;
     final payload = CommentPayload(
       fromUserId: fromUserId,
       onPostId: onPostId,
       comment: comment,
+      repliedUserName: repliedUserName,
+      repliedUserId: repliedUserId,
     );
     try {
       await FirebaseFirestore.instance.collection(FirebaseCollectionName.comments).add(payload);
@@ -38,6 +42,8 @@ class SendCommentNotifier extends StateNotifier<IsLoading> {
     required String comment,
     required String userId,
     required String postId,
+    required UserId repliedUserId,
+    required String repliedUserName,
   }) async {
     isLoading = true;
 
@@ -54,6 +60,8 @@ class SendCommentNotifier extends StateNotifier<IsLoading> {
           FirebaseFieldName.postId: postId,
           FirebaseFieldName.userId: userId,
           FirebaseFieldName.comment: comment,
+          FirebaseFieldName.repliedUser: repliedUserName,
+          FirebaseFieldName.repliedUserId: repliedUserId,
         });
       }
       return true;

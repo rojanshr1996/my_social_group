@@ -100,13 +100,7 @@ class PostListItemThumbnailView extends HookConsumerWidget {
                                     Utilities.openActivity(context, PostUserProfileView(userId: post.userId));
                                   }
                                 },
-                                child: PostUserInfo(
-                                  createdAt: post.createdAt == null ? "" : post.createdAt.toString(),
-                                  displayName: userInfoModel.displayName,
-                                  imageUrl: userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null
-                                      ? ""
-                                      : userInfoModel.imageUrl!,
-                                ),
+                                child: PostUserInfo(postData: post),
                               ),
                             ),
                             Positioned(

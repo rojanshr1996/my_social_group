@@ -11,6 +11,9 @@ class FirebaseFieldName {
   static const displayName = "display_name";
   static const email = "email";
 
+  static const repliedUser = "replied_user";
+  static const repliedUserId = "replied_user_id";
+
   static const phone = "phone";
   static const imageUrl = "imageUrl";
 

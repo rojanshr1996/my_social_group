@@ -33,11 +33,12 @@ class CommentUpdateDialog extends HookConsumerWidget {
             GestureDetector(
               onTap: () async {
                 final isUpdated = await ref.read(sendCommentProvider.notifier).updateComment(
-                      commentId: comment.id,
-                      postId: comment.onPostId,
-                      userId: comment.fromUserId,
-                      comment: commentController.text.trim(),
-                    );
+                    commentId: comment.id,
+                    postId: comment.onPostId,
+                    userId: comment.fromUserId,
+                    comment: commentController.text.trim(),
+                    repliedUserName: comment.repliedUserName,
+                    repliedUserId: comment.repliedUserId);
                 if (isUpdated) {
                   Utilities.closeActivity(context);
                   commentController.clear();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/posts/providers/posts_by_search_term_provider.dart';
-import 'package:tekk_gram/views/components/animations/data_not_found_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/empty_contents_with_text_animation_view.dart';
+import 'package:tekk_gram/views/components/animations/empty_search_animation_view.dart';
 import 'package:tekk_gram/views/components/animations/error_animation_view.dart';
 import 'package:tekk_gram/views/components/post/post_sliver_grid_view.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
@@ -31,7 +31,7 @@ class SearchGridView extends ConsumerWidget {
       data: (posts) {
         if (posts.isEmpty) {
           return const SliverToBoxAdapter(
-            child: DataNotFoundAnimationView(),
+            child: EmptySearchAnimationView(),
           );
         } else {
           return PostsSliverGridView(posts: posts);

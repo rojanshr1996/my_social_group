@@ -105,7 +105,7 @@ class UserPostsView extends ConsumerWidget {
               Expanded(
                 child: posts.when(
                   data: (posts) {
-                    if (posts.isEmpty) {
+                    if (posts.isNotEmpty) {
                       return const EmptyContentsWithTextAnimationView(
                         text: Strings.youHaveNoPosts,
                       );

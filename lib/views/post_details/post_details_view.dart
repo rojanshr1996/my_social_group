@@ -17,7 +17,6 @@ import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
 import 'package:tekk_gram/views/components/dialogs/delete_dialog.dart';
 import 'package:tekk_gram/views/components/like_button.dart';
 import 'package:tekk_gram/views/components/likes_count_view.dart';
-import 'package:tekk_gram/views/components/post/post_date_view.dart';
 import 'package:tekk_gram/views/components/post/post_display_name_and_message.dart';
 import 'package:tekk_gram/views/components/post/post_image_or_video_view.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
@@ -122,6 +121,11 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // post details (shows divider at bottom)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: PostDisplayNameAndMessageView(post: postWithComments.post),
+                ),
                 PostImageOrVideoView(post: postWithComments.post),
                 // like and comment buttons
                 Row(
@@ -139,11 +143,10 @@ class _PostDetailsViewState extends ConsumerState<PostDetailsView> {
                       ),
                   ],
                 ),
-                // post details (shows divider at bottom)
-                PostDisplayNameAndMessageView(post: postWithComments.post),
-                PostDateView(dateTime: postWithComments.post.createdAt!),
+
+                // PostDateView(dateTime: postWithComments.post.createdAt!),
                 const Padding(
-                  padding: EdgeInsets.all(12.0),
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
                   child: Divider(color: Colors.white70),
                 ),
                 // comments

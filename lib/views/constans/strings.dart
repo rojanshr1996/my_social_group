@@ -4,8 +4,7 @@ import 'package:flutter/foundation.dart';
 class Strings {
   static const appName = 'TekkGram';
   static const welcomeToAppName = 'Welcome to ';
-  static const youHaveNoPosts =
-      'You have not made a post yet. Press either the video-upload or the photo-upload buttons to the top of the screen in order to upload your first post!';
+  static const youHaveNoPosts = 'You have not made a post yet';
   static const noPostsAvailable =
       "Nobody seems to have made any posts yet. Why don't you take the first step and upload your first post?!";
   static const enterYourSearchTerm =

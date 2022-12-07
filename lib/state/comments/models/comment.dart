@@ -12,10 +12,14 @@ class Comment {
   final DateTime createdAt;
   final UserId fromUserId;
   final PostId onPostId;
+  final String repliedUserName;
+  final UserId repliedUserId;
   Comment(Map<String, dynamic> json, {required this.id})
       : comment = json[FirebaseFieldName.comment],
         createdAt = (json[FirebaseFieldName.createdAt] as Timestamp).toDate(),
         fromUserId = json[FirebaseFieldName.userId],
+        repliedUserName = json[FirebaseFieldName.repliedUser] ?? "",
+        repliedUserId = json[FirebaseFieldName.repliedUserId] ?? "",
         onPostId = json[FirebaseFieldName.postId];
 
   @override
@@ -27,7 +31,9 @@ class Comment {
           comment == other.comment &&
           createdAt == other.createdAt &&
           fromUserId == other.fromUserId &&
-          onPostId == other.onPostId;
+          onPostId == other.onPostId &&
+          repliedUserId == other.repliedUserId &&
+          repliedUserName == other.repliedUserName;
 
   @override
   int get hashCode => Object.hashAll(
@@ -37,6 +43,8 @@ class Comment {
           createdAt,
           fromUserId,
           onPostId,
+          repliedUserName,
+          repliedUserId,
         ],
       );
 }

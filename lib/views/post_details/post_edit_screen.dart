@@ -119,12 +119,7 @@ class _PostEditScreenState extends ConsumerState<PostEditScreen> {
             children: [
               userInfoModel.when(
                 data: (userInfoModel) {
-                  return PostUserInfo(
-                    createdAt: widget.post.createdAt == null ? "" : widget.post.createdAt.toString(),
-                    displayName: userInfoModel.displayName,
-                    imageUrl:
-                        userInfoModel.imageUrl == "" || userInfoModel.imageUrl == null ? "" : userInfoModel.imageUrl!,
-                  );
+                  return PostUserInfo(postData: widget.post);
                 },
                 error: (error, stackTrace) {
                   return const SizedBox.shrink();

@@ -25,7 +25,7 @@ class BasicDetailsTabView extends StatelessWidget {
                 Row(
                   children: [
                     FaIcon(FontAwesomeIcons.solidEnvelope, color: AppColors.loginButtonColor, size: 20),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         userData.email ?? "",
@@ -34,11 +34,11 @@ class BasicDetailsTabView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     FaIcon(FontAwesomeIcons.phone, color: AppColors.loginButtonColor, size: 20),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Text(
                         userData.phone == "" ? " -- " : userData.phone!,
