@@ -17,11 +17,14 @@ class Strings {
   static const logIntoYourAccount = 'Log into your account using the option below.';
   static const comments = 'Comments';
   static const writeYourCommentHere = 'Write your comment here...';
+  static const writeYourMessageHere = 'Write your message here...';
   static const checkOutThisPost = 'Check out this post!';
   static const postDetails = 'Post Details';
   static const editPost = 'Edit Post';
   static const post = 'post';
   static const update = 'Update';
+  static const users = 'Users';
+  static const chat = 'Chat';
 
   static const createNewPost = 'Create New Post';
   static const pleaseWriteYourMessageHere = 'Please write your message here';
