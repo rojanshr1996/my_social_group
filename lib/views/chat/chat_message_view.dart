@@ -60,8 +60,10 @@ class ChatMessageView extends HookConsumerWidget {
                                   padding: const EdgeInsets.all(12),
                                   child: Text.rich(
                                     TextSpan(
-                                      text: chatData.message,
-                                    ),
+                                        text: chatData.message,
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            color:
+                                                isOwnMessage ? AppColors.loginButtonTextColor : AppColors.darkColor)),
                                   ),
                                 ),
                               ),
