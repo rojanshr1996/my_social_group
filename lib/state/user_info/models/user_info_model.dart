@@ -28,6 +28,15 @@ class UserInfoModel extends MapView<String, String?> {
           },
         );
 
+  UserInfoModel.fromMap({required Map<String, dynamic> json})
+      : this(
+          userId: json[FirebaseFieldName.userId],
+          displayName: json[FirebaseFieldName.displayName] ?? '',
+          email: json[FirebaseFieldName.email],
+          phone: json[FirebaseFieldName.phone],
+          imageUrl: json[FirebaseFieldName.imageUrl],
+        );
+
   UserInfoModel.fromJson(
     Map<String, dynamic> json, {
     required UserId userId,

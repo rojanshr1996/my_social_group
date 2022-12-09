@@ -41,3 +41,25 @@ final userInfoModelProvider = StreamProvider.family.autoDispose<UserInfoModel, U
     return controller.stream;
   },
 );
+
+final usersListInfoProvider = StreamProvider.autoDispose<Iterable<UserInfoModel>>(
+  (ref) {
+    final controller = StreamController<Iterable<UserInfoModel>>();
+
+    final sub = FirebaseFirestore.instance.collection(FirebaseCollectionName.users).snapshots().listen(
+      (snapshots) {
+        final users = snapshots.docs.map(
+          (doc) => UserInfoModel.fromMap(json: doc.data()),
+        );
+        controller.sink.add(users);
+      },
+    );
+
+    ref.onDispose(() {
+      sub.cancel();
+      controller.close();
+    });
+
+    return controller.stream;
+  },
+);

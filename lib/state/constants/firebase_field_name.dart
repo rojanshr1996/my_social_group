@@ -17,5 +17,11 @@ class FirebaseFieldName {
   static const phone = "phone";
   static const imageUrl = "imageUrl";
 
+  // Chat field names
+  static const sender = "sender";
+  static const receiver = "receiver";
+  static const message = "message";
+  static const type = "type";
+
   const FirebaseFieldName._();
 }
