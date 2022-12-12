@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/chat/models/chat_payload.dart';
@@ -15,6 +17,7 @@ class ChatMessageNotifier extends StateNotifier<IsLoading> {
     required String receiverId,
     required String message,
     String? type,
+    List<File> files = const [],
   }) async {
     isLoading = true;
     try {
@@ -24,19 +27,22 @@ class ChatMessageNotifier extends StateNotifier<IsLoading> {
           .collection(groupChatId)
           .doc(DateTime.now().millisecondsSinceEpoch.toString());
 
-      ChatPayload messageChat = ChatPayload(
-        sender: currentUserId,
-        receiver: receiverId,
-        createdAt: FieldValue.serverTimestamp(),
-        message: message,
-        type: type ?? "text",
-      );
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        transaction.set(
-          documentReference,
-          messageChat,
+      if (files.isEmpty) {
+        ChatPayload messageChat = ChatPayload(
+          sender: currentUserId,
+          receiver: receiverId,
+          createdAt: FieldValue.serverTimestamp(),
+          message: message,
+          type: type ?? "text",
         );
-      });
+        await FirebaseFirestore.instance.runTransaction((transaction) async {
+          transaction.set(
+            documentReference,
+            messageChat,
+          );
+        });
+      } else {}
+
       return true;
     } catch (_) {
       return false;

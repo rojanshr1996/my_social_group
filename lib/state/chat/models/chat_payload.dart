@@ -13,6 +13,12 @@ class ChatPayload extends MapView<String, dynamic> {
     required String message,
     required String type,
     FieldValue? createdAt,
+    List<String>? thumbnailUrl,
+    List<String>? fileUrl,
+    List<String>? thumbnailStorageId,
+    List<String>? originalFileStorageId,
+    List<double>? aspectRatio,
+    List<String>? fileName,
   }) : super(
           {
             FirebaseFieldName.sender: sender,
@@ -20,6 +26,12 @@ class ChatPayload extends MapView<String, dynamic> {
             FirebaseFieldName.message: message,
             FirebaseFieldName.type: type,
             PostKey.createdAt: createdAt,
+            PostKey.thumbnailStorageId: thumbnailStorageId ?? [],
+            PostKey.originalFileStorageId: originalFileStorageId ?? [],
+            PostKey.fileName: fileName ?? [],
+            PostKey.aspectRatio: aspectRatio ?? [],
+            PostKey.thumbnailUrl: thumbnailUrl ?? [],
+            PostKey.fileUrl: fileUrl ?? [],
           },
         );
 }
