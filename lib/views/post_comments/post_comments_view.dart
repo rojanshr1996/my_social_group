@@ -233,23 +233,23 @@ class PostCommentsView extends HookConsumerWidget {
                                                 repliedUserModel.value = value;
                                               });
                                             },
-                                            onEdit: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  return CommentUpdateDialog(comment: comment);
-                                                },
-                                              ).then((value) {
-                                                ref.refresh(postCommentsProvider(request.value));
-                                              });
-                                            },
-                                            onDelete: () async {
-                                              final shouldDeleteComment = await displayDeleteDialog(context);
-
-                                              if (shouldDeleteComment) {
-                                                await ref
-                                                    .read(deleteCommentProvider.notifier)
-                                                    .deleteComment(commentId: comment.id);
+                                            onSelected: (value) async {
+                                              if (value == 1) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return CommentUpdateDialog(comment: comment);
+                                                  },
+                                                ).then((value) {
+                                                  ref.refresh(postCommentsProvider(request.value));
+                                                });
+                                              } else {
+                                                final shouldDeleteComment = await displayDeleteDialog(context);
+                                                if (shouldDeleteComment) {
+                                                  await ref
+                                                      .read(deleteCommentProvider.notifier)
+                                                      .deleteComment(commentId: comment.id);
+                                                }
                                               }
                                             },
                                           );

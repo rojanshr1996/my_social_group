@@ -226,13 +226,22 @@ class _ChatMessageScreenState extends ConsumerState<ChatMessageScreen> {
                                 autofocus: autofocus.value,
                                 maxLines: null,
                                 textCapitalization: TextCapitalization.sentences,
-                                onSubmitted: (message) {
+                                onSubmitted: (message) async {
                                   if (message.isNotEmpty) {
-                                    _submitMessageWithController(
+                                    final isSent = await _submitMessageWithController(
                                       controller: messageController,
                                       ref: ref,
                                       groupChatId: groupChatId,
+                                      files: mediaFile.value,
                                     );
+
+                                    if (isSent) {
+                                      messageController.clear();
+                                      mediaFile.value.clear();
+                                      thumbnailRequest.value.clear();
+                                      if (!mounted) return;
+                                      FocusScope.of(context).unfocus();
+                                    }
                                   }
                                 },
                                 decoration: InputDecoration(
@@ -267,12 +276,21 @@ class _ChatMessageScreenState extends ConsumerState<ChatMessageScreen> {
                               color: AppColors.loginButtonColor,
                             ),
                             onPressed: hasText.value
-                                ? () {
-                                    _submitMessageWithController(
+                                ? () async {
+                                    final isSent = await _submitMessageWithController(
                                       controller: messageController,
                                       ref: ref,
                                       groupChatId: groupChatId,
+                                      files: mediaFile.value,
                                     );
+
+                                    if (isSent) {
+                                      messageController.clear();
+                                      mediaFile.value.clear();
+                                      thumbnailRequest.value.clear();
+                                      if (!mounted) return;
+                                      FocusScope.of(context).unfocus();
+                                    }
                                   }
                                 : null,
                           ),
@@ -292,14 +310,15 @@ class _ChatMessageScreenState extends ConsumerState<ChatMessageScreen> {
   Future<bool> displayDeleteDialog(BuildContext context) =>
       const DeleteDialog(titleOfObjectToDelete: str.Strings.comment).present(context).then((value) => value ?? false);
 
-  Future<void> _submitMessageWithController({
+  Future<bool> _submitMessageWithController({
     required TextEditingController controller,
     required WidgetRef ref,
     required String groupChatId,
+    List<File> files = const [],
   }) async {
     final userId = ref.read(userIdProvider);
     if (userId == null) {
-      return;
+      return false;
     }
 
     final isSent = await ref.read(sendChatMessageProvider.notifier).sendMessage(
@@ -307,14 +326,9 @@ class _ChatMessageScreenState extends ConsumerState<ChatMessageScreen> {
           currentUserId: userId,
           receiverId: widget.userData.userId,
           message: controller.text.trim(),
+          files: files,
         );
-
-    if (isSent) {
-      controller.clear();
-      // dismissKeyboard();
-      if (!mounted) return;
-      FocusScope.of(context).unfocus();
-    }
+    return isSent;
   }
 
   openCameraOption(BuildContext context) {

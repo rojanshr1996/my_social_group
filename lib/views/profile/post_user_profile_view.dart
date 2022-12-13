@@ -76,7 +76,7 @@ class _UserProfileViewState extends ConsumerState<PostUserProfileView> {
                                         )
                                       : GestureDetector(
                                           onTap: () {
-                                            Utilities.openActivity(
+                                            Utilities.fadeOpenActivity(
                                                 context, EnlargeImage(imageUrl: userInfoModel.imageUrl!));
                                           },
                                           child: Container(

@@ -6,6 +6,8 @@ import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
 import 'package:tekk_gram/state/chat/models/chat_model.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
 import 'package:tekk_gram/utils/constants.dart';
+import 'package:tekk_gram/utils/utilities.dart';
+import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 
 class ChatMessageView extends HookConsumerWidget {
@@ -92,12 +94,15 @@ class ChatMessageView extends HookConsumerWidget {
                                 itemCount: chatData.thumbnailUrl.length,
                                 physics: const NeverScrollableScrollPhysics(),
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3, crossAxisSpacing: 2, mainAxisSpacing: 2),
+                                    crossAxisCount: 3, crossAxisSpacing: 6, mainAxisSpacing: 6),
                                 itemBuilder: (BuildContext context, int index) {
                                   return chatData.thumbnailUrl[index] == ""
                                       ? const SizedBox()
                                       : InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Utilities.fadeOpenActivity(
+                                                context, EnlargeImage(imageUrl: chatData.fileUrl[index]));
+                                          },
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(10),
                                             child: Container(

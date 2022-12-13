@@ -36,7 +36,7 @@ class PostImageView extends HookWidget {
           itemBuilder: (ctx, index, realIdx) {
             return GestureDetector(
               onTap: () {
-                Utilities.openActivity(context, EnlargeImage(imageUrl: post.fileUrl[index]));
+                Utilities.fadeOpenActivity(context, EnlargeImage(imageUrl: post.fileUrl[index]));
               },
               child: Image.network(
                 post.fileUrl[index],
