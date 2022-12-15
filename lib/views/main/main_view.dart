@@ -10,13 +10,13 @@ import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/post_settings/providers/post_settings_provider.dart';
 import 'package:tekk_gram/state/toggle_view/toggle_posts_view_provider.dart';
 import 'package:tekk_gram/utils/utilities.dart';
+import 'package:tekk_gram/views/chat/user_search_list_screen.dart';
 import 'package:tekk_gram/views/components/camera_gallery_selection_widget.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_list_view.dart';
 import 'package:tekk_gram/views/create_new_post/create_new_post_view.dart';
 import 'package:tekk_gram/views/main/speed_dial_menu_button.dart';
-import 'package:tekk_gram/views/profile/users_list_view.dart';
 import 'package:tekk_gram/views/tabs/home/home_view.dart';
 import 'package:tekk_gram/views/tabs/search/search_view.dart';
 import 'package:tekk_gram/views/tabs/users_posts/user_posts_view.dart';
@@ -50,18 +50,12 @@ class _MainViewState extends ConsumerState<MainView> {
           automaticallyImplyLeading: false,
           backgroundColor: AppColors.transparent,
           actions: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16),
-            //   child: Image.asset(
-            //     appLogo,
-            //     width: 85,
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: IconButton(
                 onPressed: () {
-                  Utilities.openActivity(context, const UsersListView());
+                  Utilities.openActivity(context, const UserSearchListScreen());
+                  // Utilities.openActivity(context, const UsersListView());
                 },
                 icon: const FaIcon(
                   FontAwesomeIcons.comments,

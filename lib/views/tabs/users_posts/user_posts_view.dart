@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tekk_gram/state/home/providers/bottom_nav_bar_scroll_visibility_provider.dart';
 import 'package:tekk_gram/state/posts/providers/user_posts_provider.dart';
 import 'package:tekk_gram/state/toggle_view/toggle_posts_view_provider.dart';
 import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dart';
@@ -23,8 +22,6 @@ class UserPostsView extends ConsumerWidget {
     final posts = ref.watch(authUserPostsProvider);
 
     final userInfoModel = ref.watch(userInfoModelProvider(FirebaseAuth.instance.currentUser!.uid));
-    final showBottomNavBar = ref.watch(bottomNavBarScrollVisibilityProvider);
-
     final toggleValue = ref.watch(togglePostsViewProvider);
 
     return RefreshIndicator(
