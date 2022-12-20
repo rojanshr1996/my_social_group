@@ -37,6 +37,8 @@ class Strings {
 
   static const enterYourSearchTermHere = 'Enter your search term here';
 
+  static const enterYourQueryHere = 'Enter your query here';
+
   // login view rich text at bottom
   static const dontHaveAnAccount = "Don't have an account?\n";
   static const signUpOn = 'Sign up on ';
@@ -44,5 +46,10 @@ class Strings {
   static const logout = 'Log out';
   static const settings = 'Settings';
   static const profile = 'Profile';
+  static const helpAndSupport = 'Help and Support';
+  static const contactUs = 'Contact Us';
+  static const howCanWeHelp = 'How Can We Help?';
+
+  static const String noRouteFound = "no_route_found";
   const Strings._();
 }

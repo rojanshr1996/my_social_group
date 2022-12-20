@@ -36,6 +36,7 @@ dependencies:
   cached_network_image: ^3.2.2
   carousel_slider: ^4.1.1
   flutter_speed_dial: ^6.2.0
+  flutter_email_sender: ^5.2.0
 
 dev_dependencies:
   flutter_test:

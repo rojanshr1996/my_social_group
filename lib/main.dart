@@ -5,9 +5,13 @@ import 'package:tekk_gram/splash_screen.dart';
 
 import 'dart:developer' as devtools show log;
 
+import 'package:tekk_gram/views/resources/routes_manager.dart';
+
 extension Log on Object {
   void log() => devtools.log(toString());
 }
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +31,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         indicatorColor: Colors.blueGrey,
       ),
+      navigatorKey: navigatorKey,
+      onGenerateRoute: RouteGenerator.getRoute,
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,

@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tekk_gram/state/auth/providers/auth_state_provider.dart';
 import 'package:tekk_gram/state/auth/providers/user_id_provider.dart';
-import 'package:tekk_gram/state/home/providers/botton_nav_index_provider.dart';
 import 'package:tekk_gram/state/image_upload/helpers/image_picker_helper.dart';
 import 'package:tekk_gram/state/image_upload/models/file_type.dart';
 import 'package:tekk_gram/state/image_upload/models/thumbnail_request.dart';
@@ -17,13 +16,12 @@ import 'package:tekk_gram/state/user_info/providers/user_info_model_provider.dar
 import 'package:tekk_gram/utils/constants.dart';
 import 'package:tekk_gram/utils/utilities.dart';
 import 'package:tekk_gram/views/components/camera_gallery_selection_widget.dart';
-import 'package:tekk_gram/views/components/dialogs/alert_dialog_model.dart';
-import 'package:tekk_gram/views/components/dialogs/logout_dialog.dart';
 import 'package:tekk_gram/views/components/enlarge_image.dart';
 import 'package:tekk_gram/views/components/remove_focus.dart';
 import 'package:tekk_gram/views/constans/app_colors.dart';
 import 'package:tekk_gram/views/constans/strings.dart';
 import 'package:tekk_gram/views/profile/profile_image_view.dart';
+import 'package:tekk_gram/views/settings/settings.dart';
 
 class UserProfileView extends StatefulHookConsumerWidget {
   const UserProfileView({super.key});
@@ -51,6 +49,15 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
             elevation: 0,
             title: const Text(Strings.profile),
             backgroundColor: AppColors.transparent,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Utilities.openActivity(context, const Settings());
+                },
+                icon: const FaIcon(FontAwesomeIcons.gears),
+                color: AppColors.loginButtonColor,
+              )
+            ],
           ),
           body: userInfoModel.when(
             data: (userInfoModel) {
@@ -379,44 +386,6 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        Strings.settings,
-                        style: Theme.of(context).textTheme.subtitle1?.copyWith(color: Colors.white70),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: ListTile(
-                              onTap: () async {
-                                final shouldLogOut = await const LogoutDialog().present(context).then(
-                                      (value) => value ?? false,
-                                    );
-                                if (shouldLogOut && mounted) {
-                                  Utilities.closeActivity(context);
-                                  ref.read(bottomNavIndexProvider.notifier).changeIndex(index: 0);
-                                  await ref.read(authStateProvider.notifier).logOut();
-                                }
-                              },
-                              leading: FaIcon(
-                                FontAwesomeIcons.arrowRightFromBracket,
-                                size: 20,
-                                color: AppColors.loginButtonColor,
-                              ),
-                              title: const Text(Strings.logout),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
               );
