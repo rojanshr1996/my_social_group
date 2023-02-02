@@ -128,7 +128,7 @@ class _UserProfileViewState extends ConsumerState<PostUserProfileView> {
                               padding: const EdgeInsets.only(left: 16, right: 4),
                               child: Text(
                                 userInfoModel.displayName,
-                                style: Theme.of(context).textTheme.headline6?.copyWith(),
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(),
                                 textAlign: TextAlign.center,
                                 softWrap: true,
                               ),
@@ -148,7 +148,7 @@ class _UserProfileViewState extends ConsumerState<PostUserProfileView> {
                         Expanded(
                           child: SizedBox(
                             child: Builder(builder: (BuildContext context) {
-                              final TabController tabController = DefaultTabController.of(context)!;
+                              final TabController tabController = DefaultTabController.of(context);
                               tabController.addListener(() {
                                 setState(() {});
                               });
@@ -166,7 +166,7 @@ class _UserProfileViewState extends ConsumerState<PostUserProfileView> {
                                         unselectedLabelColor: AppColors.greyColor,
                                         labelColor: AppColors.loginButtonTextColor,
                                         isScrollable: true,
-                                        labelStyle: Theme.of(context).textTheme.subtitle1,
+                                        labelStyle: Theme.of(context).textTheme.titleMedium,
                                         // unselectedLabelStyle: CustomTextStyle.subtitleText
                                         //     .copyWith(fontWeight: medium, fontFamily: "euclid"),
                                         tabs: const <Widget>[
