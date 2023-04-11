@@ -47,12 +47,12 @@ class HelpAndSupport extends HookWidget {
                               const SizedBox(height: 30),
                               Text(
                                 Strings.contactUs,
-                                style: Theme.of(context).textTheme.headline5?.copyWith(fontWeight: FontWeight.w600),
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               const SizedBox(height: 10),
                               Text(
                                 Strings.howCanWeHelp,
-                                style: Theme.of(context).textTheme.subtitle1?.copyWith(color: AppColors.greyColor),
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.greyColor),
                               ),
                               const SizedBox(height: 30),
                             ],

@@ -16,14 +16,14 @@ class AboutView extends StatelessWidget {
           children: [
             Text(
               Strings.appName.toUpperCase(),
-              style: Theme.of(context).textTheme.headline4?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 10),
             Text(
               "Version 1.0",
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .titleMedium
                   ?.copyWith(color: AppColors.loginButtonColor, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 10),

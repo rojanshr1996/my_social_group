@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -247,7 +249,7 @@ class _UserProfileViewState extends ConsumerState<UserProfileView> {
                                   padding: const EdgeInsets.only(left: 16, right: 4),
                                   child: Text(
                                     userInfoModel.displayName,
-                                    style: Theme.of(context).textTheme.headline6?.copyWith(),
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(),
                                     textAlign: TextAlign.left,
                                   ),
                                 ),

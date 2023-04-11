@@ -61,6 +61,7 @@ class CommentTile extends HookConsumerWidget {
                                 return CommentUpdateDialog(comment: comment);
                               },
                             ).then((value) {
+                              // ignore: unused_result
                               ref.refresh(postCommentsProvider(request.value));
                             });
                           },

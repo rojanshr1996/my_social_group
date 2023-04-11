@@ -20,8 +20,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
-
     Future.delayed(const Duration(seconds: 2), () {
       Utilities.removeStackActivity(context, const IndexScreen());
     });

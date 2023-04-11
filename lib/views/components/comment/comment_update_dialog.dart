@@ -40,6 +40,7 @@ class CommentUpdateDialog extends HookConsumerWidget {
                     repliedUserName: comment.repliedUserName,
                     repliedUserId: comment.repliedUserId);
                 if (isUpdated) {
+                  // ignore: use_build_context_synchronously
                   Utilities.closeActivity(context);
                   commentController.clear();
                   dismissKeyboard();

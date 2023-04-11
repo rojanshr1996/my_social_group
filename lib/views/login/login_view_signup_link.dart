@@ -11,7 +11,7 @@ class LoginViewSignupLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RichTextWidget(
-      styleForAll: Theme.of(context).textTheme.subtitle1?.copyWith(height: 1.5),
+      styleForAll: Theme.of(context).textTheme.titleMedium?.copyWith(height: 1.5),
       texts: [
         BaseText.plain(text: Strings.dontHaveAnAccount),
         BaseText.plain(text: Strings.signUpOn),

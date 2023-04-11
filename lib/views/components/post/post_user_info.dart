@@ -37,7 +37,7 @@ class PostUserInfo extends ConsumerWidget {
                   height: 30,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context).bottomAppBarColor,
+                    color: Theme.of(context).bottomAppBarTheme.color,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(2),

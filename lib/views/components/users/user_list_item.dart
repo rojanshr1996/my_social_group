@@ -19,7 +19,7 @@ class UserListItem extends ConsumerWidget {
             height: 55,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Theme.of(context).bottomAppBarColor,
+              color: Theme.of(context).bottomAppBarTheme.color,
             ),
             child: Padding(
               padding: const EdgeInsets.all(4),

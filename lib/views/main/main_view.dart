@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -70,8 +72,8 @@ class _MainViewState extends ConsumerState<MainView> {
               builder: (contzext, ref, child) {
                 final toggleValue = ref.watch(togglePostsViewProvider);
                 return Container(
-                  decoration:
-                      BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).bottomAppBarColor))),
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Theme.of(context).bottomAppBarTheme.color!))),
                   child: Column(
                     children: [
                       bottomNavIndex == 1

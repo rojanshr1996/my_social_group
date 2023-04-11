@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'dart:developer';
 import 'dart:io';
 

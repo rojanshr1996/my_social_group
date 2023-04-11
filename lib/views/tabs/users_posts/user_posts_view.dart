@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,7 +57,7 @@ class UserPostsView extends ConsumerWidget {
                             height: 40,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Theme.of(context).bottomAppBarColor,
+                              color: Theme.of(context).bottomAppBarTheme.color,
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(4),

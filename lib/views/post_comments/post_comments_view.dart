@@ -1,3 +1,5 @@
+// ignore_for_file: unused_result
+
 import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -189,7 +191,7 @@ class PostCommentsView extends HookConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Text(
                       "Comments",
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   Expanded(

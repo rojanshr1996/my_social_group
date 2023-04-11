@@ -58,6 +58,7 @@ class ChatMessageNotifier extends StateNotifier<IsLoading> {
         List<String> thumbnailUrlList = [];
         List<String> originalUrlList = [];
 
+        // ignore: unused_local_variable
         final result = await Future.forEach(
           files,
           (imageFile) async {
